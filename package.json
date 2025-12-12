@@ -1,6 +1,7 @@
 {
   "name": "copy-of-lins-agroindustrial-report",
   "private": true,
+  "homepage": "https://<USERNAME>.github.io/copy-of-lins-agroindustrial-report/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
