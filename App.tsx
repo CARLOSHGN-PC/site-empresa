@@ -43,13 +43,13 @@ const PublicView: React.FC = () => {
         
         <footer className="bg-cacu-dark text-white py-16 px-8 lg:px-24 flex flex-col md:flex-row justify-between items-center gap-8 border-t-4 border-cacu-primary">
             <div className="text-left">
-                <p className="font-bold text-2xl mb-2">CACU Agroindustrial S.A.</p>
-                <p className="text-white/70">Relatório de Sustentabilidade 2023/2025</p>
+                <p className="font-bold text-2xl mb-2">{data.settings?.companyName || 'CACU Agroindustrial'}</p>
+                <p className="text-white/70">Relatório de Sustentabilidade</p>
                 <p className="text-white/50 text-sm mt-4 max-w-md">Energia que transforma o futuro. Compromisso com a terra e com as pessoas.</p>
             </div>
             <div className="text-center md:text-right">
-                <p className="opacity-60 text-xs">© 2025 Todos os direitos reservados.</p>
-                <p className="opacity-40 text-[10px] mt-1">Desenvolvido para CACU Agroindustrial</p>
+                <p className="opacity-60 text-xs">© {new Date().getFullYear()} Todos os direitos reservados.</p>
+                <p className="opacity-40 text-[10px] mt-1">Desenvolvido para {data.settings?.companyName}</p>
             </div>
         </footer>
       </main>
@@ -63,23 +63,49 @@ const PublicView: React.FC = () => {
 };
 
 const App: React.FC = () => {
+  const [appData, setAppData] = useState<AppData | null>(null);
+
+  useEffect(() => {
+      // Load data once to set global styles
+      const data = ContentService.getData();
+      setAppData(data);
+  }, []);
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<PublicView />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/admin" element={
-            <RequireAuth>
-                <AdminDashboard />
-            </RequireAuth>
-        } />
-        <Route path="/admin/edit/:sectionId/:itemId" element={
-            <RequireAuth>
-                <ItemEditor />
-            </RequireAuth>
-        } />
-      </Routes>
-    </Router>
+    <>
+        {appData && (
+            <style>{`
+                :root {
+                    --color-primary: ${appData.settings?.primaryColor || '#009E49'};
+                    --color-dark: ${appData.settings?.darkColor || '#0B3B24'};
+                }
+                /* Override Tailwind classes dynamically */
+                .bg-cacu-primary { background-color: var(--color-primary) !important; }
+                .text-cacu-primary { color: var(--color-primary) !important; }
+                .border-cacu-primary { border-color: var(--color-primary) !important; }
+                .ring-cacu-primary { --tw-ring-color: var(--color-primary) !important; }
+                
+                .bg-cacu-dark { background-color: var(--color-dark) !important; }
+                .text-cacu-dark { color: var(--color-dark) !important; }
+            `}</style>
+        )}
+        <Router>
+          <Routes>
+            <Route path="/" element={<PublicView />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/admin" element={
+                <RequireAuth>
+                    <AdminDashboard />
+                </RequireAuth>
+            } />
+            <Route path="/admin/edit/:sectionId/:itemId" element={
+                <RequireAuth>
+                    <ItemEditor />
+                </RequireAuth>
+            } />
+          </Routes>
+        </Router>
+    </>
   );
 };
 

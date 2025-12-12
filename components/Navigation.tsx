@@ -1,8 +1,10 @@
+
 import React from 'react';
 import { Logo } from './Logo';
 import { ReportSection } from '../types';
 import { Menu, X, Lock } from 'lucide-react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { ContentService } from '../services/contentService';
 
 interface Props {
   sections: ReportSection[];
@@ -13,6 +15,8 @@ interface Props {
 export const Navigation: React.FC<Props> = ({ sections, isOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const data = ContentService.getData();
+  const settings = data.settings;
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {
     e.preventDefault();
@@ -40,9 +44,11 @@ export const Navigation: React.FC<Props> = ({ sections, isOpen, setIsOpen }) => 
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm h-24 flex items-center justify-between px-6 lg:px-12 border-b border-gray-100 transition-all">
         <div className="flex items-center gap-6 cursor-pointer" onClick={() => navigate('/')}>
             <Logo mode="dark" className="scale-90 origin-left" />
-            <div className="hidden xl:flex flex-col border-l-2 border-cacu-primary pl-4 text-xs text-cacu-dark">
-                <span className="font-bold uppercase tracking-wide">Relatório de Sustentabilidade</span>
-                <span className="opacity-70">Safras 2023/24 e 2024/25</span>
+            
+            {/* Dynamic Editable Header Text */}
+            <div className="hidden xl:flex flex-col border-l-2 border-cacu-primary pl-4 text-xs text-cacu-dark justify-center h-10">
+                <span className="font-bold uppercase tracking-wide leading-tight">{settings?.reportTitle || 'Relatório de Sustentabilidade'}</span>
+                <span className="opacity-70 leading-tight">{settings?.reportSubtitle || 'Ano Base'}</span>
             </div>
         </div>
 

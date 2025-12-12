@@ -1,3 +1,4 @@
+
 export enum SectionType {
   HERO = 'HERO',          
   TEXT_IMAGE = 'TEXT_IMAGE', 
@@ -9,6 +10,15 @@ export enum SectionType {
   GRID_CARDS = 'GRID_CARDS', // For Products
   CHART = 'CHART',        // For Emissions
   MATERIALITY = 'MATERIALITY' // For Materiality Matrix
+}
+
+export interface GlobalSettings {
+  companyName: string;
+  logoUrl?: string; // If present, overrides the SVG logo
+  primaryColor: string; // Hex code
+  darkColor: string; // Hex code
+  reportTitle?: string; // e.g., "Relatório de Sustentabilidade" (Header)
+  reportSubtitle?: string; // e.g., "Safras 2023/24 e 2024/25" (Header)
 }
 
 export interface ContentItem {
@@ -66,5 +76,6 @@ export interface ReportSection {
 }
 
 export interface AppData {
+  settings: GlobalSettings;
   sections: ReportSection[];
 }

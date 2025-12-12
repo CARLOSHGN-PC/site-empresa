@@ -1,6 +1,15 @@
+
 import { AppData, SectionType } from './types';
 
 export const INITIAL_DATA: AppData = {
+  settings: {
+    companyName: 'CACU Agroindustrial',
+    primaryColor: '#009E49', // Default Vibrant Green
+    darkColor: '#0B3B24',    // Default Dark Green
+    logoUrl: '', // Empty by default (uses SVG)
+    reportTitle: 'Relatório de Sustentabilidade',
+    reportSubtitle: 'Safras 2023/24 e 2024/25'
+  },
   sections: [
     {
       id: 'capa',
@@ -82,9 +91,9 @@ export const INITIAL_DATA: AppData = {
                 title: 'Nosso compromisso',
                 bgColor: 'white',
                 values: [
-                    { title: 'Propósito', description: 'Produzir energia que se transforma em combustível para a vida.', icon: 'Fuel' },
-                    { title: 'Missão', description: 'Somos uma empresa em constante movimento em busca da excelência.', icon: 'Star' },
-                    { title: 'Visão', description: 'Aumentar o resultado do negócio através da eficiência operacional e diversificação.', icon: 'Eye' },
+                    { title: 'Propósito', description: 'Produzir energia que se transforma em combustível para a vida.', icon: 'Award' },
+                    { title: 'Missão', description: 'Somos uma empresa em constante movimento em busca da excelência.', icon: 'Leaf' },
+                    { title: 'Visão', description: 'Aumentar o resultado do negócio através da eficiência operacional e diversificação.', icon: 'Handshake' },
                     { title: 'Valores', description: 'Ética, Sustentabilidade, Segurança, Integração, Inovação e Pessoas.', icon: 'Heart' }
                 ]
             },

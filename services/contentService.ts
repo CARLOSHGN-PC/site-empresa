@@ -1,19 +1,33 @@
-import { AppData, ReportSection, ContentItem, SectionType } from '../types';
+
+import { AppData, ReportSection, ContentItem, SectionType, GlobalSettings } from '../types';
 import { INITIAL_DATA } from '../constants';
 
-const STORAGE_KEY = 'cacu_report_data_v3'; // Version bump
+const STORAGE_KEY = 'cacu_report_data_v4'; // Version bump for new structure
 
 export const ContentService = {
   getData: (): AppData => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      return JSON.parse(stored);
+      const parsedData = JSON.parse(stored);
+      // Ensure settings exist if migrating from old data
+      if (!parsedData.settings) {
+          parsedData.settings = INITIAL_DATA.settings;
+      }
+      return parsedData;
     }
     return INITIAL_DATA;
   },
 
   saveData: (data: AppData) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  },
+
+  updateSettings: (newSettings: GlobalSettings) => {
+    const data = ContentService.getData();
+    data.settings = newSettings;
+    ContentService.saveData(data);
+    // Force reload to apply theme changes immediately
+    window.location.reload();
   },
 
   updateSectionItem: (sectionId: string, item: ContentItem) => {

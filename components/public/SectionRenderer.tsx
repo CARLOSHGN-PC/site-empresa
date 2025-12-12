@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { ContentItem, SectionType } from '../../types';
 import { Logo } from '../Logo';
@@ -44,34 +45,71 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
   const bgClass = item.bgColor === 'blue' ? 'bg-cacu-dark' : item.bgColor === 'green' ? 'bg-cacu-primary' : 'bg-white';
   const textClass = item.bgColor === 'white' ? 'text-cacu-dark' : 'text-white';
 
-  // --- 1. COVER PAGE ---
+  // --- 1. COVER PAGE (REDESIGNED) ---
   if (item.type === SectionType.COVER) {
     return (
-      <div className="relative w-full h-screen overflow-hidden bg-gray-100">
-        <div className="absolute inset-0">
-             <img src={item.imageUrl} alt="Cover" className="w-full h-full object-cover scale-105" />
-             <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent"></div>
-        </div>
+      <div className="relative w-full h-[calc(100vh-6rem)] mt-0 lg:mt-0 lg:h-screen overflow-hidden bg-gray-200">
         
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute -left-[10%] top-0 h-full w-[60%] bg-cacu-primary/90 opacity-90 rounded-r-[100%_50%] transform skew-x-12 mix-blend-multiply"></div>
-            <div className="absolute -left-[20%] top-0 h-full w-[50%] bg-cacu-dark/90 opacity-95 rounded-r-[100%_50%] transform skew-x-6"></div>
+        {/* Left Side: Dark Green Organic Shape */}
+        <div 
+            className="absolute top-0 left-0 h-full w-[120%] lg:w-[65%] bg-cacu-dark z-10"
+            style={{
+                borderBottomRightRadius: '100% 100%',
+                borderTopRightRadius: '20% 50%',
+                clipPath: 'ellipse(100% 100% at 0% 50%)' // Simple clean organic curve
+            }}
+        >
+            {/* Optional Texture/Pattern overlay on the green part */}
+            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
         </div>
 
-        <div className="absolute top-0 right-0 h-full w-full flex flex-col items-end justify-center pr-8 lg:pr-24 z-30">
-             <div className="text-right max-w-2xl animate-fade-in-up">
-                 <h1 className="text-5xl lg:text-[5rem] font-serif font-bold text-white mb-4 leading-[0.9] drop-shadow-lg">
-                     Relatório de <br/>
-                     <span className="text-cacu-accent">Sustentabilidade</span>
+        {/* Right Side Background Image (Subtle) */}
+        {item.imageUrl && (
+            <div className="absolute inset-0 z-0">
+                 <img 
+                    src={item.imageUrl} 
+                    alt="Background" 
+                    className="w-full h-full object-cover opacity-100 lg:ml-[30%]" 
+                    style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 100%)' }}
+                />
+            </div>
+        )}
+
+        {/* Content Container */}
+        <div className="absolute inset-0 z-20 flex flex-col items-end justify-center px-8 lg:px-24">
+            <div className="text-right max-w-3xl animate-fade-in-up mt-24 lg:mt-0">
+                 {/* Main Title: Relatório de Sustentabilidade */}
+                 <h1 className="flex flex-col items-end">
+                    <span className="text-4xl lg:text-6xl text-white lg:text-white font-serif font-light mb-2 drop-shadow-md lg:drop-shadow-none block">
+                        {item.title?.split(' ')[0]} {item.title?.split(' ')[1]}
+                    </span>
+                    <span className="text-5xl lg:text-[7rem] font-sans font-bold text-cacu-accent lg:text-cacu-primary leading-[0.9] tracking-tight drop-shadow-lg lg:drop-shadow-none lg:text-transparent lg:bg-clip-text lg:bg-gradient-to-br lg:from-cacu-primary lg:to-green-700">
+                        {item.title?.split(' ').slice(2).join(' ')}
+                    </span>
                  </h1>
-                 <p className="text-xl lg:text-2xl text-white/90 font-sans font-light tracking-wide mb-12 border-t border-white/30 pt-6 inline-block">
+
+                 {/* Subtitle / Years */}
+                 <p className="text-xl lg:text-3xl text-white/90 lg:text-gray-500 font-sans font-light tracking-wide mt-6 mb-12 border-t border-white/30 lg:border-cacu-primary/30 pt-6 inline-block">
                      {item.subtitle}
                  </p>
                  
-                 <div className="flex justify-end">
-                    <Logo mode="light" className="scale-150 origin-right" />
+                 {/* Bottom Logo */}
+                 <div className="flex justify-end mt-8">
+                    {/* On Mobile: Light Mode Logo (over green). On Desktop: Dark/Color Mode Logo (over gray) */}
+                    <div className="lg:hidden">
+                        <Logo mode="light" className="scale-125 origin-right" />
+                    </div>
+                    <div className="hidden lg:block">
+                        <Logo mode="dark" className="scale-150 origin-right" />
+                    </div>
                  </div>
-             </div>
+            </div>
+        </div>
+        
+        {/* Decorative Element bottom left */}
+        <div className="absolute bottom-0 left-0 p-8 z-30 hidden lg:block">
+             <div className="w-16 h-1 bg-cacu-accent/50 rounded-full mb-2"></div>
+             <div className="w-8 h-1 bg-cacu-accent/30 rounded-full"></div>
         </div>
       </div>
     );
