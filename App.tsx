@@ -23,7 +23,12 @@ const PublicView: React.FC = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   useEffect(() => {
-    setData(ContentService.getData());
+    const load = async () => {
+        await ContentService.initialize();
+        const d = await ContentService.getData();
+        setData(d);
+    };
+    load();
   }, []);
 
   if (!data) return <div className="flex h-screen items-center justify-center text-cacu-dark font-bold animate-pulse">Carregando relatório...</div>;
@@ -67,8 +72,12 @@ const App: React.FC = () => {
 
   useEffect(() => {
       // Load data once to set global styles
-      const data = ContentService.getData();
-      setAppData(data);
+      const load = async () => {
+          await ContentService.initialize();
+          const d = await ContentService.getData();
+          setAppData(d);
+      };
+      load();
   }, []);
 
   return (

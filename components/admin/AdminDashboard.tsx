@@ -17,7 +17,11 @@ export const AdminDashboard: React.FC = () => {
   const [tempSettings, setTempSettings] = useState<GlobalSettings | null>(null);
 
   useEffect(() => {
-    setData(ContentService.getData());
+    const load = async () => {
+        const d = await ContentService.getData();
+        setData(d);
+    };
+    load();
   }, []);
 
   const openSettings = () => {
@@ -27,16 +31,16 @@ export const AdminDashboard: React.FC = () => {
       }
   };
 
-  const saveSettings = (e: React.FormEvent) => {
+  const saveSettings = async (e: React.FormEvent) => {
       e.preventDefault();
       if (tempSettings) {
-          ContentService.updateSettings(tempSettings);
+          await ContentService.updateSettings(tempSettings);
           setIsSettingsOpen(false);
       }
   };
 
-  const handleAddItem = (sectionId: string) => {
-      const newItemId = ContentService.addContentItem(sectionId, SectionType.TEXT_IMAGE);
+  const handleAddItem = async (sectionId: string) => {
+      const newItemId = await ContentService.addContentItem(sectionId, SectionType.TEXT_IMAGE);
       if (newItemId) {
           navigate(`/admin/edit/${sectionId}/${newItemId}`);
       }

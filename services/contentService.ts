@@ -1,37 +1,79 @@
 
 import { AppData, ReportSection, ContentItem, SectionType, GlobalSettings } from '../types';
 import { INITIAL_DATA } from '../constants';
+import { db } from './firebase';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
-const STORAGE_KEY = 'cacu_report_data_v4'; // Version bump for new structure
+const DOC_ID = 'main_report';
+const COLLECTION = 'reports';
+
+// Cached data in memory to avoid excessive reads
+let cachedData: AppData | null = null;
 
 export const ContentService = {
-  getData: (): AppData => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsedData = JSON.parse(stored);
-      // Ensure settings exist if migrating from old data
-      if (!parsedData.settings) {
-          parsedData.settings = INITIAL_DATA.settings;
+
+  // Initialize Database if empty
+  initialize: async (): Promise<void> => {
+      try {
+          const docRef = doc(db, COLLECTION, DOC_ID);
+          const docSnap = await getDoc(docRef);
+
+          if (!docSnap.exists()) {
+              console.log('Initializing Firestore with default data...');
+              await setDoc(docRef, INITIAL_DATA);
+              cachedData = INITIAL_DATA;
+          } else {
+              cachedData = docSnap.data() as AppData;
+          }
+      } catch (error) {
+          console.error("Error initializing data:", error);
+          // Fallback to local data if firebase fails (e.g. no config)
+          cachedData = INITIAL_DATA;
       }
-      return parsedData;
+  },
+
+  getData: async (): Promise<AppData> => {
+    if (cachedData) return cachedData;
+
+    try {
+        const docRef = doc(db, COLLECTION, DOC_ID);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            cachedData = docSnap.data() as AppData;
+
+            // Ensure settings exist if migrating from old data structure
+            if (!cachedData.settings) {
+                cachedData.settings = INITIAL_DATA.settings;
+            }
+            return cachedData;
+        }
+    } catch (e) {
+        console.warn("Could not fetch from Firebase, using default.", e);
     }
+
     return INITIAL_DATA;
   },
 
-  saveData: (data: AppData) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  saveData: async (data: AppData): Promise<void> => {
+    cachedData = data; // Optimistic update
+    try {
+        const docRef = doc(db, COLLECTION, DOC_ID);
+        await setDoc(docRef, data);
+    } catch (e) {
+        console.error("Error saving to Firebase", e);
+        throw e;
+    }
   },
 
-  updateSettings: (newSettings: GlobalSettings) => {
-    const data = ContentService.getData();
+  updateSettings: async (newSettings: GlobalSettings) => {
+    const data = await ContentService.getData();
     data.settings = newSettings;
-    ContentService.saveData(data);
-    // Force reload to apply theme changes immediately
+    await ContentService.saveData(data);
     window.location.reload();
   },
 
-  updateSectionItem: (sectionId: string, item: ContentItem) => {
-    const data = ContentService.getData();
+  updateSectionItem: async (sectionId: string, item: ContentItem) => {
+    const data = await ContentService.getData();
     const sectionIndex = data.sections.findIndex(s => s.id === sectionId);
     if (sectionIndex === -1) return;
 
@@ -39,11 +81,11 @@ export const ContentService = {
     if (itemIndex === -1) return;
 
     data.sections[sectionIndex].items[itemIndex] = item;
-    ContentService.saveData(data);
+    await ContentService.saveData(data);
   },
 
-  addContentItem: (sectionId: string, type: SectionType): string | null => {
-      const data = ContentService.getData();
+  addContentItem: async (sectionId: string, type: SectionType): Promise<string | null> => {
+      const data = await ContentService.getData();
       const sectionIndex = data.sections.findIndex(s => s.id === sectionId);
       if (sectionIndex === -1) return null;
 
@@ -59,12 +101,12 @@ export const ContentService = {
       };
 
       data.sections[sectionIndex].items.push(newItem);
-      ContentService.saveData(data);
+      await ContentService.saveData(data);
       return newItemId;
   },
 
-  addSection: (title: string) => {
-      const data = ContentService.getData();
+  addSection: async (title: string): Promise<string> => {
+      const data = await ContentService.getData();
       const newId = title.toLowerCase().replace(/[^a-z0-9]/g, '-');
       
       const newSection: ReportSection = {
@@ -74,18 +116,18 @@ export const ContentService = {
       };
       
       data.sections.push(newSection);
-      ContentService.saveData(data);
+      await ContentService.saveData(data);
       return newId;
   },
 
-  removeSection: (sectionId: string) => {
-      const data = ContentService.getData();
+  removeSection: async (sectionId: string) => {
+      const data = await ContentService.getData();
       data.sections = data.sections.filter(s => s.id !== sectionId);
-      ContentService.saveData(data);
+      await ContentService.saveData(data);
   },
 
-  resetData: () => {
-    localStorage.removeItem(STORAGE_KEY);
+  resetData: async () => {
+    await ContentService.saveData(INITIAL_DATA);
     window.location.reload();
   }
 };
