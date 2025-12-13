@@ -2,20 +2,19 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
-// Explicitly log loaded environment variables for debugging
-console.log('Firebase Configuration Loaded:', {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY ? 'Set' : 'Missing',
-    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-});
+// Configuration keys hardcoded as requested by the user for ease of deployment.
+// Note: In a public repository, it is generally recommended to use environment variables/secrets.
+// However, Firebase API keys are designed to be safe to expose in client-side code
+// provided Firestore Security Rules are configured correctly in the Firebase Console.
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  apiKey: "AIzaSyBAsJ4V-QT_NCdDFLxmqloJnPetA8Z_0zs",
+  authDomain: "site-sustentabilidade.firebaseapp.com",
+  projectId: "site-sustentabilidade",
+  storageBucket: "site-sustentabilidade.firebasestorage.app",
+  messagingSenderId: "909794812502",
+  appId: "1:909794812502:web:d53138d740109fa95a11f7",
+  measurementId: "G-R6WQ9MH8FD"
 };
 
 const app = initializeApp(firebaseConfig);
