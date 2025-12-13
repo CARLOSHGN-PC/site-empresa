@@ -18,40 +18,55 @@ export const ContentService = {
           const docRef = doc(db, COLLECTION, DOC_ID);
           const docSnap = await getDoc(docRef);
 
-          if (!docSnap.exists()) {
-              console.log('Initializing Firestore with default data...');
-              await setDoc(docRef, INITIAL_DATA);
-              cachedData = INITIAL_DATA;
-          } else {
+          if (docSnap.exists()) {
               cachedData = docSnap.data() as AppData;
+          } else {
+              // Try to create only if we have permissions, but don't crash
+              try {
+                console.log('Initializing Firestore with default data...');
+                await setDoc(docRef, INITIAL_DATA);
+                cachedData = INITIAL_DATA;
+              } catch (writeErr) {
+                 console.warn("Could not write initial data to Firestore (permissions?). Using local fallback.", writeErr);
+                 cachedData = INITIAL_DATA;
+              }
           }
       } catch (error) {
-          console.error("Error initializing data:", error);
+          console.error("Error initializing data (likely permissions). Using local fallback.", error);
           // Fallback to local data if firebase fails (e.g. no config)
           cachedData = INITIAL_DATA;
       }
   },
 
   getData: async (): Promise<AppData> => {
-    if (cachedData) return cachedData;
+    // If we have cached data (from initialize or previous fetch), return it
+    if (cachedData) {
+        // Double check settings existence to prevent "undefined" errors
+        if (!cachedData.settings) {
+            cachedData.settings = INITIAL_DATA.settings;
+        }
+        return cachedData;
+    }
 
+    // If not cached, try to fetch again
     try {
         const docRef = doc(db, COLLECTION, DOC_ID);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             cachedData = docSnap.data() as AppData;
-
-            // Ensure settings exist if migrating from old data structure
-            if (!cachedData.settings) {
-                cachedData.settings = INITIAL_DATA.settings;
-            }
-            return cachedData;
+        } else {
+             cachedData = INITIAL_DATA;
         }
     } catch (e) {
         console.warn("Could not fetch from Firebase, using default.", e);
+        cachedData = INITIAL_DATA;
     }
 
-    return INITIAL_DATA;
+    // Ensure integrity before returning
+    if (!cachedData) cachedData = INITIAL_DATA;
+    if (!cachedData.settings) cachedData.settings = INITIAL_DATA.settings;
+
+    return cachedData;
   },
 
   saveData: async (data: AppData): Promise<void> => {
@@ -61,6 +76,7 @@ export const ContentService = {
         await setDoc(docRef, data);
     } catch (e) {
         console.error("Error saving to Firebase", e);
+        alert("Erro ao salvar no banco de dados. Verifique sua conexão ou permissões. Suas alterações estão salvas apenas nesta sessão.");
         throw e;
     }
   },
