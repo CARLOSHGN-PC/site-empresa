@@ -35,7 +35,7 @@ const PublicView: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24">
-      <Navigation sections={data.sections} isOpen={isNavOpen} setIsOpen={setIsNavOpen} />
+      <Navigation sections={data.sections} settings={data.settings} isOpen={isNavOpen} setIsOpen={setIsNavOpen} />
       
       <main>
         {data.sections.map(section => (

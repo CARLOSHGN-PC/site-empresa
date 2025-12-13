@@ -1,31 +1,38 @@
 
 import React from 'react';
-import { ContentService } from '../services/contentService';
+import { GlobalSettings } from '../types';
 
-export const Logo: React.FC<{ className?: string, mode?: 'light' | 'dark' }> = ({ className, mode = 'light' }) => {
-  const data = ContentService.getData();
-  const settings = data.settings;
+interface LogoProps {
+  className?: string;
+  mode?: 'light' | 'dark';
+  settings?: GlobalSettings;
+}
 
-  // mode 'light': White text (for dark backgrounds)
-  // mode 'dark': Colored text (for white backgrounds)
+export const Logo: React.FC<LogoProps> = ({ className, mode = 'light', settings }) => {
+  // Use passed settings or defaults (defensive fallback)
   
   const accentColor = settings?.primaryColor || '#009E49'; 
   const darkColor = settings?.darkColor || '#0B3B24';
+  const companyName = settings?.companyName || 'CACU Agroindustrial';
   
-  const textColor = mode === 'light' ? 'text-white' : `text-[${darkColor}]`;
   const logoFill = mode === 'light' ? '#ffffff' : darkColor;
   
+  // Helper to split name for styling
+  const nameParts = companyName.split(' ');
+  const firstName = nameParts[0];
+  const restName = nameParts.slice(1).join(' ');
+
   // If user uploaded a custom logo
   if (settings?.logoUrl) {
       return (
         <div className={`flex items-center gap-3 ${className}`}>
-             <img src={settings.logoUrl} alt={settings.companyName} className="h-12 w-auto object-contain" />
+             <img src={settings.logoUrl} alt={companyName} className="h-12 w-auto object-contain" />
              <div className="flex flex-col leading-none select-none">
                 <span className={`text-2xl font-extrabold tracking-tighter`} style={{ color: mode === 'light' ? '#fff' : darkColor }}>
-                    {settings.companyName.split(' ')[0]}
+                    {firstName}
                 </span>
                 <span className={`text-[8px] uppercase tracking-[0.3em] font-bold opacity-80 ml-0.5`} style={{ color: mode === 'light' ? '#fff' : darkColor }}>
-                    {settings.companyName.split(' ').slice(1).join(' ')}
+                    {restName}
                 </span>
             </div>
         </div>
@@ -51,10 +58,10 @@ export const Logo: React.FC<{ className?: string, mode?: 'light' | 'dark' }> = (
       
       <div className="flex flex-col leading-none select-none">
           <span className={`text-2xl font-extrabold tracking-tighter`} style={{ color: mode === 'light' ? '#fff' : darkColor }}>
-              {settings.companyName.split(' ')[0]}
+              {firstName}
           </span>
           <span className={`text-[8px] uppercase tracking-[0.3em] font-bold opacity-80 ml-0.5`} style={{ color: mode === 'light' ? '#fff' : darkColor }}>
-              {settings.companyName.split(' ').slice(1).join(' ')}
+              {restName}
           </span>
       </div>
     </div>
