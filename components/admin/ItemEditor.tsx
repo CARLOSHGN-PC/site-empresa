@@ -14,20 +14,23 @@ export const ItemEditor: React.FC = () => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   useEffect(() => {
-    const appData = ContentService.getData();
-    setData(appData);
-    
-    if (sectionId && itemId) {
-        const section = appData.sections.find(s => s.id === sectionId);
-        const foundItem = section?.items.find(i => i.id === itemId);
-        if (foundItem) setItem(JSON.parse(JSON.stringify(foundItem)));
-        else navigate('/admin');
-    }
+    const load = async () => {
+        const appData = await ContentService.getData();
+        setData(appData);
+
+        if (sectionId && itemId) {
+            const section = appData.sections.find(s => s.id === sectionId);
+            const foundItem = section?.items.find(i => i.id === itemId);
+            if (foundItem) setItem(JSON.parse(JSON.stringify(foundItem)));
+            else navigate('/admin');
+        }
+    };
+    load();
   }, [sectionId, itemId, navigate]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (sectionId && item) {
-        ContentService.updateSectionItem(sectionId, item);
+        await ContentService.updateSectionItem(sectionId, item);
         const btn = document.getElementById('save-btn');
         if(btn) {
             const originalText = btn.innerHTML;
