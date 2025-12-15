@@ -118,6 +118,9 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
                     <h2 className="text-white font-serif text-6xl lg:text-7xl font-medium leading-[1] tracking-tight mb-8 whitespace-pre-line">
                         {item.title}
                     </h2>
+
+                    {item.body && <p className="text-white/80 text-lg font-light leading-relaxed mb-8 whitespace-pre-line max-w-xl">{item.body}</p>}
+
                     <div className="w-full max-w-[200px] h-1 bg-cacu-primary mb-8"></div>
                     
                     <div className="mt-12">
@@ -146,7 +149,9 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
 
               <div className="relative z-10 max-w-[1400px] mx-auto w-full">
                   <AnimatedBlock>
-                    <h2 className="text-6xl lg:text-8xl text-cacu-primary font-serif font-thin mb-24 whitespace-pre-line">{item.title}</h2>
+                    <h2 className="text-6xl lg:text-8xl text-cacu-primary font-serif font-thin mb-12 whitespace-pre-line">{item.title}</h2>
+                    {item.subtitle && <p className="text-white/50 text-xl font-light mb-12 max-w-3xl whitespace-pre-line">{item.subtitle}</p>}
+                    {item.body && <div className="text-white/70 text-lg font-light leading-relaxed mb-24 max-w-4xl whitespace-pre-line">{item.body}</div>}
                   </AnimatedBlock>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-20">
                       {item.summaryItems?.map((s, i) => (
@@ -206,9 +211,11 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
           <div className="min-h-screen bg-white py-32 px-8 lg:px-24 flex items-center section-page-break">
               <div className="max-w-7xl mx-auto w-full">
                   <AnimatedBlock>
-                    <h2 className="text-5xl lg:text-6xl text-cacu-dark font-serif font-light mb-24 text-center whitespace-pre-line">
+                    <h2 className="text-5xl lg:text-6xl text-cacu-dark font-serif font-light mb-8 text-center whitespace-pre-line">
                         {item.title} <span className="text-cacu-primary font-bold">.</span>
                     </h2>
+                    {item.subtitle && <p className="text-gray-500 text-center max-w-3xl mx-auto mb-8 whitespace-pre-line">{item.subtitle}</p>}
+                    {item.body && <div className="text-gray-500 text-center max-w-3xl mx-auto mb-24 whitespace-pre-line leading-relaxed">{item.body}</div>}
                   </AnimatedBlock>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                       {item.values?.map((val, i) => (
@@ -271,7 +278,9 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
               <div className="max-w-6xl w-full text-center">
                   <AnimatedBlock>
                     <span className="text-cacu-primary font-bold tracking-widest uppercase text-xs">Estratégia ESG</span>
-                    <h2 className="text-5xl text-cacu-dark font-serif font-bold mb-16 mt-2 whitespace-pre-line">{item.title}</h2>
+                    <h2 className="text-5xl text-cacu-dark font-serif font-bold mb-8 mt-2 whitespace-pre-line">{item.title}</h2>
+                    {item.subtitle && <p className="text-gray-500 mb-8 max-w-2xl mx-auto whitespace-pre-line">{item.subtitle}</p>}
+                    {item.body && <div className="text-gray-500 mb-16 max-w-3xl mx-auto whitespace-pre-line leading-relaxed">{item.body}</div>}
                   </AnimatedBlock>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
@@ -353,7 +362,9 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
               
               <div className="max-w-7xl mx-auto w-full relative z-10">
                   <AnimatedBlock>
-                    <h2 className="text-6xl lg:text-8xl font-serif font-thin mb-20 leading-none whitespace-pre-line">{item.title}</h2>
+                    <h2 className="text-6xl lg:text-8xl font-serif font-thin mb-8 leading-none whitespace-pre-line">{item.title}</h2>
+                    {item.subtitle && <p className="text-white/60 text-xl font-light mb-12 uppercase tracking-widest">{item.subtitle}</p>}
+                    {item.body && <div className="text-white/80 text-lg font-light leading-relaxed mb-20 max-w-4xl whitespace-pre-line">{item.body}</div>}
                   </AnimatedBlock>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-16 gap-y-16">
                       {item.stats?.map((stat, idx) => (
