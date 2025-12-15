@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { AppData, SectionType, GlobalSettings } from '../../types';
 import { ContentService } from '../../services/contentService';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Edit, PlusCircle, Trash2, Image as ImageIcon, BarChart2, Clock, Type, LayoutTemplate, ChevronRight, Settings, Search, X, Save, Palette } from 'lucide-react';
+import { Edit, PlusCircle, Trash2, Image as ImageIcon, BarChart2, Clock, Type, LayoutTemplate, ChevronRight, Settings, Search, X, Save, Palette, Edit3 } from 'lucide-react';
 import { AdminLayout } from './AdminLayout';
 
 export const AdminDashboard: React.FC = () => {
@@ -15,6 +15,10 @@ export const AdminDashboard: React.FC = () => {
   // Settings Modal State
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [tempSettings, setTempSettings] = useState<GlobalSettings | null>(null);
+
+  // Rename Section State
+  const [isRenameOpen, setIsRenameOpen] = useState(false);
+  const [newSectionTitle, setNewSectionTitle] = useState('');
 
   useEffect(() => {
     const load = async () => {
@@ -43,6 +47,24 @@ export const AdminDashboard: React.FC = () => {
       const newItemId = await ContentService.addContentItem(sectionId, SectionType.TEXT_IMAGE);
       if (newItemId) {
           navigate(`/admin/edit/${sectionId}/${newItemId}`);
+      }
+  };
+
+  const handleRenameSection = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (activeSectionId && newSectionTitle.trim()) {
+          await ContentService.updateSectionTitle(activeSectionId, newSectionTitle);
+          setIsRenameOpen(false);
+          // Refresh data
+          const d = await ContentService.getData();
+          setData(d);
+      }
+  };
+
+  const openRenameModal = () => {
+      if (activeSection) {
+          setNewSectionTitle(activeSection.menuTitle);
+          setIsRenameOpen(true);
       }
   };
 
@@ -84,7 +106,7 @@ export const AdminDashboard: React.FC = () => {
             {/* Top Bar for Settings */}
             <div className="flex justify-end mb-4">
                 <button onClick={openSettings} className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 hover:border-cacu-primary transition-all shadow-sm">
-                    <Palette size={16} /> Personalizar Site (Logo/Cores/Cabeçalho)
+                    <Palette size={16} /> Personalizar Site (Logo/Cores/Cabeçalho/Rodapé)
                 </button>
             </div>
 
@@ -125,7 +147,12 @@ export const AdminDashboard: React.FC = () => {
                                 <Settings size={14} />
                                 <span className="text-xs font-bold uppercase tracking-wider">Gerenciando Página</span>
                             </div>
-                            <h1 className="text-4xl font-extrabold text-cacu-dark">{activeSection.menuTitle}</h1>
+                            <div className="flex items-center gap-4">
+                                <h1 className="text-4xl font-extrabold text-cacu-dark">{activeSection.menuTitle}</h1>
+                                <button onClick={openRenameModal} className="text-gray-400 hover:text-cacu-primary transition-colors p-2 rounded-lg hover:bg-gray-50" title="Renomear Página">
+                                    <Edit3 size={20} />
+                                </button>
+                            </div>
                             <p className="text-gray-500 mt-2">Gerencie os blocos de conteúdo desta seção.</p>
                         </div>
                         <button 
@@ -254,6 +281,32 @@ export const AdminDashboard: React.FC = () => {
                             </div>
 
                             <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Rodapé (Footer)</h4>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-2">Texto Principal</label>
+                                        <textarea
+                                            value={tempSettings.footerText || ''}
+                                            onChange={e => setTempSettings({...tempSettings, footerText: e.target.value})}
+                                            className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-cacu-primary outline-none"
+                                            placeholder="Ex: Energia que transforma..."
+                                            rows={2}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-2">Texto de Copyright (Direitos)</label>
+                                        <input
+                                            type="text"
+                                            value={tempSettings.footerCopyright || ''}
+                                            onChange={e => setTempSettings({...tempSettings, footerCopyright: e.target.value})}
+                                            className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-cacu-primary outline-none"
+                                            placeholder="Ex: Desenvolvido para"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
                                 <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Cores do Tema</h4>
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
@@ -300,6 +353,33 @@ export const AdminDashboard: React.FC = () => {
                             </button>
                             <p className="text-center text-xs text-gray-400 mt-2">A página será recarregada para aplicar as alterações.</p>
                         </div>
+                    </div>
+                </div>
+            )}
+
+             {/* Rename Section Modal */}
+            {isRenameOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in">
+                    <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm relative">
+                        <button onClick={() => setIsRenameOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                            <X size={20} />
+                        </button>
+                        <h3 className="text-lg font-bold text-cacu-dark mb-4">Renomear Página</h3>
+                        <form onSubmit={handleRenameSection} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-600 mb-2">Nome da Página</label>
+                                <input
+                                    type="text"
+                                    value={newSectionTitle}
+                                    onChange={e => setNewSectionTitle(e.target.value)}
+                                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-cacu-primary focus:border-transparent outline-none"
+                                    autoFocus
+                                />
+                            </div>
+                            <button type="submit" className="w-full bg-cacu-primary text-white font-bold py-3 rounded-xl hover:bg-green-600 transition-colors shadow-md">
+                                Salvar Nome
+                            </button>
+                        </form>
                     </div>
                 </div>
             )}

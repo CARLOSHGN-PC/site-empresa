@@ -8,7 +8,9 @@ export const INITIAL_DATA: AppData = {
     darkColor: '#0B3B24',    // Default Dark Green
     logoUrl: '', // Empty by default (uses SVG)
     reportTitle: 'Relatório de Sustentabilidade',
-    reportSubtitle: 'Safras 2023/24 e 2024/25'
+    reportSubtitle: 'Safras 2023/24 e 2024/25',
+    footerText: 'Energia que transforma o futuro. Compromisso com a terra e com as pessoas.',
+    footerCopyright: 'Desenvolvido para'
   },
   sections: [
     {

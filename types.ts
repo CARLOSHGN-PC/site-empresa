@@ -19,6 +19,8 @@ export interface GlobalSettings {
   darkColor: string; // Hex code
   reportTitle?: string; // e.g., "Relatório de Sustentabilidade" (Header)
   reportSubtitle?: string; // e.g., "Safras 2023/24 e 2024/25" (Header)
+  footerText?: string; // "Energia que transforma..."
+  footerCopyright?: string; // "Desenvolvido para..."
 }
 
 export interface ContentItem {
