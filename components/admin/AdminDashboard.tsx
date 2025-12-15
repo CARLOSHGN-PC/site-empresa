@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { AppData, SectionType, GlobalSettings } from '../../types';
 import { ContentService } from '../../services/contentService';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Edit, PlusCircle, Trash2, Image as ImageIcon, BarChart2, Clock, Type, LayoutTemplate, ChevronRight, Settings, Search, X, Save, Palette, Edit3 } from 'lucide-react';
+import { Edit, PlusCircle, Trash2, Image as ImageIcon, BarChart2, Clock, Type, LayoutTemplate, ChevronRight, Settings, Search, X, Save, Palette, Edit3, ArrowUp, ArrowDown } from 'lucide-react';
 import { AdminLayout } from './AdminLayout';
 
 export const AdminDashboard: React.FC = () => {
@@ -43,6 +43,16 @@ export const AdminDashboard: React.FC = () => {
       }
   };
 
+  const applyPalette = (primary: string, dark: string) => {
+      if (tempSettings) {
+          setTempSettings({
+              ...tempSettings,
+              primaryColor: primary,
+              darkColor: dark
+          });
+      }
+  };
+
   const handleAddItem = async (sectionId: string) => {
       const newItemId = await ContentService.addContentItem(sectionId, SectionType.TEXT_IMAGE);
       if (newItemId) {
@@ -58,6 +68,14 @@ export const AdminDashboard: React.FC = () => {
           // Refresh data
           const d = await ContentService.getData();
           setData(d);
+      }
+  };
+
+  const handleReorder = async (direction: 'up' | 'down') => {
+      if (activeSectionId) {
+        await ContentService.reorderSection(activeSectionId, direction);
+        const d = await ContentService.getData();
+        setData(d);
       }
   };
 
@@ -152,6 +170,15 @@ export const AdminDashboard: React.FC = () => {
                                 <button onClick={openRenameModal} className="text-gray-400 hover:text-cacu-primary transition-colors p-2 rounded-lg hover:bg-gray-50" title="Renomear Página">
                                     <Edit3 size={20} />
                                 </button>
+
+                                <div className="flex items-center gap-1 ml-4 border-l border-gray-200 pl-4">
+                                    <button onClick={() => handleReorder('up')} className="p-2 text-gray-400 hover:text-cacu-primary hover:bg-gray-50 rounded-lg" title="Mover para Cima">
+                                        <ArrowUp size={20} />
+                                    </button>
+                                    <button onClick={() => handleReorder('down')} className="p-2 text-gray-400 hover:text-cacu-primary hover:bg-gray-50 rounded-lg" title="Mover para Baixo">
+                                        <ArrowDown size={20} />
+                                    </button>
+                                </div>
                             </div>
                             <p className="text-gray-500 mt-2">Gerencie os blocos de conteúdo desta seção.</p>
                         </div>
@@ -307,10 +334,42 @@ export const AdminDashboard: React.FC = () => {
                             </div>
 
                             <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Cores do Tema</h4>
-                                <div className="grid grid-cols-2 gap-4">
+                                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Estilo Visual</h4>
+
+                                <div className="mb-6">
+                                    <label className="block text-sm font-bold text-gray-700 mb-3">Paletas de Cores Prontas</label>
+                                    <div className="flex flex-wrap gap-2">
+                                        <button onClick={() => applyPalette('#009E49', '#0B3B24')} className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-xs font-bold flex gap-2 items-center">
+                                            <span className="w-3 h-3 rounded-full bg-[#009E49]"></span>
+                                            <span className="w-3 h-3 rounded-full bg-[#0B3B24]"></span>
+                                            Natureza (Padrão)
+                                        </button>
+                                        <button onClick={() => applyPalette('#2563EB', '#1E3A8A')} className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-xs font-bold flex gap-2 items-center">
+                                            <span className="w-3 h-3 rounded-full bg-[#2563EB]"></span>
+                                            <span className="w-3 h-3 rounded-full bg-[#1E3A8A]"></span>
+                                            Oceano
+                                        </button>
+                                        <button onClick={() => applyPalette('#D97706', '#78350F')} className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-xs font-bold flex gap-2 items-center">
+                                            <span className="w-3 h-3 rounded-full bg-[#D97706]"></span>
+                                            <span className="w-3 h-3 rounded-full bg-[#78350F]"></span>
+                                            Terra
+                                        </button>
+                                        <button onClick={() => applyPalette('#9333EA', '#581C87')} className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-xs font-bold flex gap-2 items-center">
+                                            <span className="w-3 h-3 rounded-full bg-[#9333EA]"></span>
+                                            <span className="w-3 h-3 rounded-full bg-[#581C87]"></span>
+                                            Tech
+                                        </button>
+                                        <button onClick={() => applyPalette('#1F2937', '#000000')} className="px-3 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-xs font-bold flex gap-2 items-center">
+                                            <span className="w-3 h-3 rounded-full bg-[#1F2937]"></span>
+                                            <span className="w-3 h-3 rounded-full bg-[#000000]"></span>
+                                            Minimalista
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4 mb-6">
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Principal (Verde Vivo)</label>
+                                        <label className="block text-sm font-bold text-gray-700 mb-2">Cor Principal</label>
                                         <div className="flex items-center gap-2">
                                             <input 
                                                 type="color" 
@@ -327,7 +386,7 @@ export const AdminDashboard: React.FC = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Secundária (Escura)</label>
+                                        <label className="block text-sm font-bold text-gray-700 mb-2">Cor Secundária</label>
                                         <div className="flex items-center gap-2">
                                             <input 
                                                 type="color" 
@@ -342,6 +401,26 @@ export const AdminDashboard: React.FC = () => {
                                                 className="flex-1 p-2 border border-gray-300 rounded-lg text-sm font-mono uppercase"
                                             />
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Tipografia (Fonte)</label>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <button
+                                            onClick={() => setTempSettings({...tempSettings, fontTheme: 'sans'})}
+                                            className={`p-3 rounded-xl border text-left flex flex-col ${tempSettings.fontTheme !== 'serif' ? 'border-cacu-primary bg-green-50 ring-1 ring-cacu-primary' : 'border-gray-200 hover:bg-gray-100'}`}
+                                        >
+                                            <span className="font-bold text-sm text-gray-800 font-sans">Moderna (Sans)</span>
+                                            <span className="text-xs text-gray-500 font-sans mt-1">Inter, Helvetica, Arial. Limpo e direto.</span>
+                                        </button>
+                                        <button
+                                            onClick={() => setTempSettings({...tempSettings, fontTheme: 'serif'})}
+                                            className={`p-3 rounded-xl border text-left flex flex-col ${tempSettings.fontTheme === 'serif' ? 'border-cacu-primary bg-green-50 ring-1 ring-cacu-primary' : 'border-gray-200 hover:bg-gray-100'}`}
+                                        >
+                                            <span className="font-bold text-sm text-gray-800 font-serif">Clássica (Serif)</span>
+                                            <span className="text-xs text-gray-500 font-serif mt-1">Merriweather, Times. Elegante e tradicional.</span>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

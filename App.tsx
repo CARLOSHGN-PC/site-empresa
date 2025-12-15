@@ -98,6 +98,13 @@ const App: React.FC = () => {
                 
                 .bg-cacu-dark { background-color: var(--color-dark) !important; }
                 .text-cacu-dark { color: var(--color-dark) !important; }
+
+                /* Font Theme Overrides */
+                ${appData.settings?.fontTheme === 'sans' ? `
+                    .font-serif {
+                        font-family: 'Inter', sans-serif !important;
+                    }
+                ` : ''}
             `}</style>
         )}
         <Router>

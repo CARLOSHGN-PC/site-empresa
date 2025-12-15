@@ -21,6 +21,7 @@ export interface GlobalSettings {
   reportSubtitle?: string; // e.g., "Safras 2023/24 e 2024/25" (Header)
   footerText?: string; // "Energia que transforma..."
   footerCopyright?: string; // "Desenvolvido para..."
+  fontTheme?: 'sans' | 'serif'; // Global font theme preference
 }
 
 export interface ContentItem {
@@ -30,6 +31,8 @@ export interface ContentItem {
   subtitle?: string;
   body?: string; 
   imageUrl?: string;
+  imageOverlayOpacity?: number; // 0 to 100
+  imagePosition?: 'top' | 'center' | 'bottom';
   imageCaption?: string;
   stats?: StatItem[];
   timelineEvents?: TimelineEvent[];

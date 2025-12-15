@@ -65,9 +65,14 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
                  <img 
                     src={item.imageUrl} 
                     alt="Background" 
-                    className="w-full h-full object-cover opacity-100 lg:ml-[30%]" 
+                    className={`w-full h-full object-cover opacity-100 lg:ml-[30%] object-${item.imagePosition || 'center'}`}
                     style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 100%)' }}
                 />
+                {/* Dynamic Overlay for Visibility */}
+                <div
+                    className="absolute inset-0 bg-black pointer-events-none lg:ml-[30%]"
+                    style={{ opacity: (item.imageOverlayOpacity ?? 10) / 100, maskImage: 'linear-gradient(to right, transparent 0%, black 100%)' }}
+                ></div>
             </div>
         )}
 
@@ -131,7 +136,8 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
 
               <div className="relative w-full lg:w-[55%] h-[60vh] lg:h-screen z-10">
                   <div className="w-full h-full hero-leaf-mask bg-gray-900 relative shadow-[-50px_0_100px_rgba(0,0,0,0.5)]">
-                      <img src={item.imageUrl} className="w-full h-full object-cover opacity-90" alt="Hero" />
+                      <img src={item.imageUrl} className={`w-full h-full object-cover opacity-90 object-${item.imagePosition || 'center'}`} alt="Hero" />
+                      <div className="absolute inset-0 bg-black pointer-events-none" style={{ opacity: (item.imageOverlayOpacity || 0) / 100 }}></div>
                   </div>
                   <div className="absolute bottom-0 left-0 w-full h-full hero-leaf-mask border-l-[20px] border-b-[20px] border-cacu-primary/20 pointer-events-none"></div>
               </div>
@@ -408,8 +414,9 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
         {item.imageUrl && (
             <div className="w-full lg:w-1/2 relative h-[600px]">
                 <AnimatedBlock>
-                    <div className="absolute inset-0 w-full h-full rounded-[4rem] overflow-hidden shadow-2xl rotate-1 hover:rotate-0 transition-transform duration-700">
-                        <img src={item.imageUrl} alt="Content" className="w-full h-full object-cover scale-110" />
+                    <div className="absolute inset-0 w-full h-full rounded-[4rem] overflow-hidden shadow-2xl rotate-1 hover:rotate-0 transition-transform duration-700 bg-gray-100">
+                        <img src={item.imageUrl} alt="Content" className={`w-full h-full object-cover scale-110 object-${item.imagePosition || 'center'}`} />
+                        <div className="absolute inset-0 bg-black pointer-events-none" style={{ opacity: (item.imageOverlayOpacity || 0) / 100 }}></div>
                     </div>
                     <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-cacu-primary rounded-full -z-10 opacity-20"></div>
                 </AnimatedBlock>

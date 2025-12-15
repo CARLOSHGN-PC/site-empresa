@@ -217,6 +217,36 @@ export const ItemEditor: React.FC = () => {
                                     <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">URL da Imagem</label>
                                     <input type="text" value={item.imageUrl || ''} onChange={e => setItem({...item, imageUrl: e.target.value})} className="w-full p-3 text-xs border border-gray-200 rounded-xl focus:border-cacu-primary focus:ring-2 focus:ring-cacu-primary/20 outline-none font-mono text-blue-600 break-all" placeholder="https://..." />
                                 </div>
+
+                                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-50">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Opacidade da Sombra (%)</label>
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                type="range"
+                                                min="0"
+                                                max="90"
+                                                step="10"
+                                                value={item.imageOverlayOpacity !== undefined ? item.imageOverlayOpacity : 10}
+                                                onChange={e => setItem({...item, imageOverlayOpacity: parseInt(e.target.value)})}
+                                                className="w-full accent-cacu-primary"
+                                            />
+                                            <span className="text-sm font-bold text-gray-700 min-w-[2.5rem]">{item.imageOverlayOpacity !== undefined ? item.imageOverlayOpacity : 10}%</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Foco da Imagem</label>
+                                        <select
+                                            value={item.imagePosition || 'center'}
+                                            onChange={e => setItem({...item, imagePosition: e.target.value as any})}
+                                            className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none"
+                                        >
+                                            <option value="top">Topo</option>
+                                            <option value="center">Centro</option>
+                                            <option value="bottom">Baixo</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </section>
                     )}

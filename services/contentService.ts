@@ -151,6 +151,24 @@ export const ContentService = {
       await ContentService.saveData(data);
   },
 
+  reorderSection: async (sectionId: string, direction: 'up' | 'down') => {
+      const data = await ContentService.getData();
+      const index = data.sections.findIndex(s => s.id === sectionId);
+      if (index === -1) return;
+
+      const newIndex = direction === 'up' ? index - 1 : index + 1;
+
+      // Bounds check
+      if (newIndex < 0 || newIndex >= data.sections.length) return;
+
+      // Swap
+      const temp = data.sections[newIndex];
+      data.sections[newIndex] = data.sections[index];
+      data.sections[index] = temp;
+
+      await ContentService.saveData(data);
+  },
+
   resetData: async () => {
     await ContentService.saveData(INITIAL_DATA);
     window.location.reload();
