@@ -49,7 +49,7 @@ export const AdminLayout: React.FC<Props> = ({ children, data }) => {
             {/* Sidebar */}
             <aside className="w-full lg:w-72 bg-white border-r border-gray-200 shadow-sm lg:h-screen lg:fixed lg:top-0 lg:left-0 z-20 flex flex-col">
                 <div className="p-8 border-b border-gray-100 flex flex-col items-center lg:items-start bg-gray-50/50">
-                    <Logo mode="dark" className="scale-90 origin-left mb-2" />
+                    <Logo mode="dark" className="scale-90 origin-left mb-2" settings={data?.settings} />
                     <span className="text-[10px] font-bold uppercase tracking-widest text-cacu-primary bg-green-100 px-2 py-1 rounded-full">Painel Administrativo</span>
                 </div>
 
