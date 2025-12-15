@@ -34,19 +34,21 @@ const PublicView: React.FC = () => {
   if (!data) return <div className="flex h-screen items-center justify-center text-cacu-dark font-bold animate-pulse">Carregando relatório...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24">
-      <Navigation sections={data.sections} settings={data.settings} isOpen={isNavOpen} setIsOpen={setIsNavOpen} />
+    <div className="min-h-screen bg-gray-50 pt-24 print:pt-0">
+      <div className="print:hidden">
+        <Navigation sections={data.sections} settings={data.settings} isOpen={isNavOpen} setIsOpen={setIsNavOpen} />
+      </div>
       
       <main>
         {data.sections.map(section => (
           <div key={section.id} id={section.id}>
              {section.items.map(item => (
-               <SectionRenderer key={item.id} item={item} />
+               <SectionRenderer key={item.id} item={item} settings={data.settings} />
              ))}
           </div>
         ))}
         
-        <footer className="bg-cacu-dark text-white py-16 px-8 lg:px-24 flex flex-col md:flex-row justify-between items-center gap-8 border-t-4 border-cacu-primary">
+        <footer className="bg-cacu-dark text-white py-16 px-8 lg:px-24 flex flex-col md:flex-row justify-between items-center gap-8 border-t-4 border-cacu-primary print:hidden">
             <div className="text-left">
                 <p className="font-bold text-2xl mb-2">{data.settings?.companyName || 'CACU Agroindustrial'}</p>
                 <p className="text-white/70">{data.settings?.reportTitle || 'Relatório de Sustentabilidade'}</p>
@@ -60,7 +62,7 @@ const PublicView: React.FC = () => {
       </main>
 
       {/* Floating Admin Access Button */}
-      <Link to="/admin" className="fixed bottom-4 left-4 z-50 bg-white/50 hover:bg-white text-cacu-dark p-2 rounded-full shadow-sm backdrop-blur-sm transition-all opacity-50 hover:opacity-100 border border-gray-200" title="Acesso Admin">
+      <Link to="/admin" className="fixed bottom-4 left-4 z-50 bg-white/50 hover:bg-white text-cacu-dark p-2 rounded-full shadow-sm backdrop-blur-sm transition-all opacity-50 hover:opacity-100 border border-gray-200 print:hidden" title="Acesso Admin">
         <Lock size={14} />
       </Link>
     </div>
