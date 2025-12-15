@@ -49,12 +49,12 @@ const PublicView: React.FC = () => {
         <footer className="bg-cacu-dark text-white py-16 px-8 lg:px-24 flex flex-col md:flex-row justify-between items-center gap-8 border-t-4 border-cacu-primary">
             <div className="text-left">
                 <p className="font-bold text-2xl mb-2">{data.settings?.companyName || 'CACU Agroindustrial'}</p>
-                <p className="text-white/70">Relatório de Sustentabilidade</p>
-                <p className="text-white/50 text-sm mt-4 max-w-md">Energia que transforma o futuro. Compromisso com a terra e com as pessoas.</p>
+                <p className="text-white/70">{data.settings?.reportTitle || 'Relatório de Sustentabilidade'}</p>
+                <p className="text-white/50 text-sm mt-4 max-w-md">{data.settings?.footerText || 'Energia que transforma o futuro. Compromisso com a terra e com as pessoas.'}</p>
             </div>
             <div className="text-center md:text-right">
                 <p className="opacity-60 text-xs">© {new Date().getFullYear()} Todos os direitos reservados.</p>
-                <p className="opacity-40 text-[10px] mt-1">Desenvolvido para {data.settings?.companyName}</p>
+                <p className="opacity-40 text-[10px] mt-1">{data.settings?.footerCopyright || 'Desenvolvido para'} {data.settings?.companyName}</p>
             </div>
         </footer>
       </main>

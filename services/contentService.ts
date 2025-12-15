@@ -100,6 +100,15 @@ export const ContentService = {
     await ContentService.saveData(data);
   },
 
+  updateSectionTitle: async (sectionId: string, newTitle: string) => {
+    const data = await ContentService.getData();
+    const sectionIndex = data.sections.findIndex(s => s.id === sectionId);
+    if (sectionIndex === -1) return;
+
+    data.sections[sectionIndex].menuTitle = newTitle;
+    await ContentService.saveData(data);
+  },
+
   addContentItem: async (sectionId: string, type: SectionType): Promise<string | null> => {
       const data = await ContentService.getData();
       const sectionIndex = data.sections.findIndex(s => s.id === sectionId);
