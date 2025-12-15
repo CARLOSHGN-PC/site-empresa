@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ContentService } from '../../services/contentService';
-import { ContentItem, SectionType } from '../../types';
-import { ArrowLeft, Save, Plus, Trash, Check, AlertCircle, Monitor, Smartphone, Layout, Type, Image as ImageIcon, List, Eye, X } from 'lucide-react';
+import { ContentItem, SectionType, ChartDataPoint, MaterialityItem, SummaryItem } from '../../types';
+import { ArrowLeft, Save, Plus, Trash, Check, AlertCircle, Monitor, Smartphone, Layout, Type, Image as ImageIcon, List, Eye, X, PieChart, Layers } from 'lucide-react';
 import { AdminLayout } from './AdminLayout';
 import { SectionRenderer } from '../public/SectionRenderer';
 
@@ -50,6 +50,15 @@ export const ItemEditor: React.FC = () => {
       if (!item) return;
       const newArray = [...(item[arrayName] as any[])];
       newArray[index][field] = value;
+      setItem({ ...item, [arrayName]: newArray });
+  };
+
+  const updateNestedArrayItem = (arrayName: keyof ContentItem, index: number, subField: string, subIndex: number, value: any) => {
+      if (!item) return;
+      const newArray = [...(item[arrayName] as any[])];
+      if (subField === 'topics') {
+          newArray[index].topics[subIndex] = value;
+      }
       setItem({ ...item, [arrayName]: newArray });
   };
 
@@ -179,7 +188,7 @@ export const ItemEditor: React.FC = () => {
                             {[SectionType.TEXT_IMAGE, SectionType.CHART, SectionType.HERO, SectionType.STATS].includes(item.type) && (
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Texto Descritivo (Corpo)</label>
-                                    <textarea rows={8} value={item.body || ''} onChange={e => setItem({...item, body: e.target.value})} className="w-full p-4 border border-gray-200 rounded-xl focus:border-cacu-primary focus:ring-2 focus:ring-cacu-primary/20 outline-none transition-all leading-relaxed text-gray-600" placeholder="Digite o conteúdo aqui..." />
+                                    <textarea rows={8} value={item.body || ''} onChange={e => setItem({...item, body: e.target.value})} className="w-full p-4 border border-gray-200 rounded-xl focus:border-cacu-primary focus:ring-2 focus:ring-cacu-primary/20 outline-none transition-all leading-relaxed text-gray-600" placeholder="Digite o conteúdo aqui... Use Enter para quebrar linhas." />
                                 </div>
                             )}
                         </div>
@@ -240,7 +249,103 @@ export const ItemEditor: React.FC = () => {
                                 </div>
                                 <div>
                                     <label className="text-[10px] uppercase font-extrabold text-gray-400 mb-1 block">Descrição Curta</label>
-                                    <input value={evt.description} onChange={e => updateArrayItem('timelineEvents', idx, 'description', e.target.value)} className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-600 focus:ring-2 focus:ring-cacu-primary/20 outline-none" placeholder="O que aconteceu?" />
+                                    <textarea rows={2} value={evt.description} onChange={e => updateArrayItem('timelineEvents', idx, 'description', e.target.value)} className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-600 focus:ring-2 focus:ring-cacu-primary/20 outline-none" placeholder="O que aconteceu?" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {/* CHART EDITOR */}
+            {item.type === SectionType.CHART && (
+                <section className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                    <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-purple-50 text-purple-600 rounded-lg"><PieChart size={20} /></div>
+                            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider">Dados do Gráfico</h2>
+                        </div>
+                        <button onClick={() => addArrayItem('chartData', { name: '2025', value1: 0 })} className="text-white bg-cacu-primary hover:bg-green-600 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors shadow-md"><Plus size={16}/> Adicionar Coluna</button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        {item.chartData?.map((dataPoint, idx) => (
+                            <div key={idx} className="bg-gray-50 p-4 rounded-2xl border border-gray-200 relative group hover:border-cacu-primary/30 transition-all">
+                                <button onClick={() => removeArrayItem('chartData', idx)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500 transition-colors"><Trash size={14}/></button>
+                                <div className="space-y-3">
+                                    <div>
+                                        <label className="text-[10px] uppercase font-extrabold text-gray-400 mb-1 block">Rótulo (Eixo X)</label>
+                                        <input value={dataPoint.name} onChange={e => updateArrayItem('chartData', idx, 'name', e.target.value)} className="w-full p-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-center outline-none" />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] uppercase font-extrabold text-gray-400 mb-1 block">Valor</label>
+                                        <input type="number" step="0.0001" value={dataPoint.value1} onChange={e => updateArrayItem('chartData', idx, 'value1', parseFloat(e.target.value))} className="w-full p-2 bg-white border border-gray-200 rounded-lg text-sm font-mono text-cacu-primary text-center outline-none" />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {/* MATERIALITY EDITOR */}
+            {item.type === SectionType.MATERIALITY && (
+                <section className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                    <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-orange-50 text-orange-600 rounded-lg"><Layers size={20} /></div>
+                            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider">Matriz de Materialidade</h2>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-6">
+                        {item.materialityItems?.map((mat, idx) => (
+                            <div key={idx} className="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                                <div className="flex justify-between mb-4">
+                                    <h3 className="font-bold text-cacu-dark uppercase">{mat.category}</h3>
+                                    <span className={`text-xs px-2 py-1 rounded bg-${mat.color === 'green' ? 'green-100 text-green-800' : mat.color === 'blue' ? 'blue-100 text-blue-800' : 'orange-100 text-orange-800'}`}>Cor: {mat.color}</span>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] uppercase font-extrabold text-gray-400 mb-1 block">Tópicos (1 por campo)</label>
+                                    {mat.topics.map((topic, tIdx) => (
+                                        <div key={tIdx} className="flex gap-2">
+                                            <input
+                                                value={topic}
+                                                onChange={e => updateNestedArrayItem('materialityItems', idx, 'topics', tIdx, e.target.value)}
+                                                className="flex-1 p-2 bg-white border border-gray-200 rounded-lg text-sm outline-none focus:border-cacu-primary"
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {/* SUMMARY EDITOR */}
+            {item.type === SectionType.SUMMARY && (
+                <section className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                    <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><List size={20} /></div>
+                            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider">Itens do Sumário</h2>
+                        </div>
+                        <button onClick={() => addArrayItem('summaryItems', { num: '00', label: 'Novo Item', desc: '' })} className="text-white bg-cacu-primary hover:bg-green-600 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors shadow-md"><Plus size={16}/> Adicionar Item</button>
+                    </div>
+                    <div className="space-y-4">
+                        {item.summaryItems?.map((sum, idx) => (
+                            <div key={idx} className="flex gap-4 items-start bg-gray-50 p-4 rounded-xl border border-gray-200 relative">
+                                <button onClick={() => removeArrayItem('summaryItems', idx)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500 transition-colors"><Trash size={14}/></button>
+                                <div className="w-16">
+                                    <label className="text-[10px] uppercase font-extrabold text-gray-400 mb-1 block">Num</label>
+                                    <input value={sum.num} onChange={e => updateArrayItem('summaryItems', idx, 'num', e.target.value)} className="w-full p-2 bg-white border border-gray-200 rounded-lg text-center font-bold outline-none" />
+                                </div>
+                                <div className="flex-1">
+                                    <label className="text-[10px] uppercase font-extrabold text-gray-400 mb-1 block">Título</label>
+                                    <input value={sum.label} onChange={e => updateArrayItem('summaryItems', idx, 'label', e.target.value)} className="w-full p-2 bg-white border border-gray-200 rounded-lg font-bold outline-none" />
+                                </div>
+                                <div className="flex-1">
+                                    <label className="text-[10px] uppercase font-extrabold text-gray-400 mb-1 block">Descrição</label>
+                                    <input value={sum.desc} onChange={e => updateArrayItem('summaryItems', idx, 'desc', e.target.value)} className="w-full p-2 bg-white border border-gray-200 rounded-lg text-sm outline-none" />
                                 </div>
                             </div>
                         ))}
@@ -281,7 +386,7 @@ export const ItemEditor: React.FC = () => {
                                     {/* Description */}
                                     <div className="md:col-span-5">
                                         <label className="text-[10px] uppercase font-extrabold text-gray-400 block mb-2">Descrição</label>
-                                        <input value={obj.description} onChange={e => updateArrayItem(item.type === SectionType.STATS ? 'stats' : item.type === SectionType.VALUES ? 'values' : 'products', idx, 'description', e.target.value)} className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-600 focus:ring-2 focus:ring-cacu-primary/20 outline-none" />
+                                        <textarea rows={2} value={obj.description} onChange={e => updateArrayItem(item.type === SectionType.STATS ? 'stats' : item.type === SectionType.VALUES ? 'values' : 'products', idx, 'description', e.target.value)} className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-600 focus:ring-2 focus:ring-cacu-primary/20 outline-none" />
                                     </div>
 
                                     {/* Icon or Image */}

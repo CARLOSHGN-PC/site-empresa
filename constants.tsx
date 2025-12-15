@@ -34,7 +34,15 @@ export const INITIAL_DATA: AppData = {
           id: 'summary-1',
           type: SectionType.SUMMARY,
           title: 'Sumário',
-          bgColor: 'blue' // Will be rendered as Deep Green in the new CSS
+          bgColor: 'blue',
+          summaryItems: [
+              { num: '01', label: 'Apresentação', desc: 'Mensagem do Presidente, Materialidade' },
+              { num: '02', label: 'Quem somos', desc: 'Perfil, Compromisso, Produtos' },
+              { num: '03', label: 'Meio ambiente', desc: 'Responsabilidade, Clima, Água' },
+              { num: '04', label: 'Social', desc: 'Colaboradores, Comunidade' },
+              { num: '05', label: 'Governança', desc: 'Estrutura, Ética, Compliance' },
+              { num: '06', label: 'Desempenho', desc: 'Operacional e Financeiro' },
+          ]
         }
       ]
     },
@@ -123,7 +131,12 @@ export const INITIAL_DATA: AppData = {
                 type: SectionType.MATERIALITY,
                 title: 'Temas materiais',
                 subtitle: 'GRI 3-2',
-                bgColor: 'white'
+                bgColor: 'white',
+                materialityItems: [
+                    { category: 'Ambiental', color: 'green', topics: ['Mudanças Climáticas', 'Biodiversidade e Solo', 'Gestão Hídrica'] },
+                    { category: 'Social', color: 'blue', topics: ['Segurança e Saúde', 'Capital Humano', 'Comunidades'] },
+                    { category: 'Governança', color: 'orange', topics: ['Ética e Compliance', 'Gestão de Riscos', 'Inovação'] }
+                ]
             }
         ]
     },

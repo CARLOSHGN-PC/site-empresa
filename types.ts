@@ -36,8 +36,22 @@ export interface ContentItem {
   values?: ValueItem[];
   products?: ProductItem[];
   chartData?: ChartDataPoint[];
+  summaryItems?: SummaryItem[];
+  materialityItems?: MaterialityItem[];
   bgColor?: 'blue' | 'white' | 'green'; 
   layout?: 'left' | 'right' | 'center';
+}
+
+export interface SummaryItem {
+  num: string;
+  label: string;
+  desc: string;
+}
+
+export interface MaterialityItem {
+  category: string; // e.g. "Ambiental"
+  color?: string; // e.g. "green" (mapped to hex in renderer)
+  topics: string[]; // e.g. ["Clima", "Água"]
 }
 
 export interface StatItem {

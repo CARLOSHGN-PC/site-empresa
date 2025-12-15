@@ -49,21 +49,17 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
   if (item.type === SectionType.COVER) {
     return (
       <div className="relative w-full h-[calc(100vh-6rem)] mt-0 lg:mt-0 lg:h-screen overflow-hidden bg-gray-200 section-page-break">
-        
-        {/* Left Side: Dark Green Organic Shape */}
         <div 
             className="absolute top-0 left-0 h-full w-[120%] lg:w-[65%] bg-cacu-dark z-10 print:bg-cacu-dark"
             style={{
                 borderBottomRightRadius: '100% 100%',
                 borderTopRightRadius: '20% 50%',
-                clipPath: 'ellipse(100% 100% at 0% 50%)' // Simple clean organic curve
+                clipPath: 'ellipse(100% 100% at 0% 50%)'
             }}
         >
-            {/* Optional Texture/Pattern overlay on the green part */}
             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
         </div>
 
-        {/* Right Side Background Image (Subtle) */}
         {item.imageUrl && (
             <div className="absolute inset-0 z-0">
                  <img 
@@ -75,10 +71,8 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
             </div>
         )}
 
-        {/* Content Container */}
         <div className="absolute inset-0 z-20 flex flex-col items-end justify-center px-8 lg:px-24">
             <div className="text-right max-w-3xl animate-fade-in-up mt-24 lg:mt-0">
-                 {/* Main Title: Relatório de Sustentabilidade */}
                  <h1 className="flex flex-col items-end">
                     <span className="text-4xl lg:text-6xl text-white lg:text-white font-serif font-light mb-2 drop-shadow-md lg:drop-shadow-none block">
                         {item.title?.split(' ')[0]} {item.title?.split(' ')[1]}
@@ -88,14 +82,11 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
                     </span>
                  </h1>
 
-                 {/* Subtitle / Years */}
                  <p className="text-xl lg:text-3xl text-white/90 lg:text-gray-500 font-sans font-light tracking-wide mt-6 mb-12 border-t border-white/30 lg:border-cacu-primary/30 pt-6 inline-block">
                      {item.subtitle}
                  </p>
                  
-                 {/* Bottom Logo */}
                  <div className="flex justify-end mt-8">
-                    {/* On Mobile: Light Mode Logo (over green). On Desktop: Dark/Color Mode Logo (over gray) */}
                     <div className="lg:hidden">
                         <Logo mode="light" className="scale-125 origin-right" settings={settings} />
                     </div>
@@ -106,7 +97,6 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
             </div>
         </div>
         
-        {/* Decorative Element bottom left */}
         <div className="absolute bottom-0 left-0 p-8 z-30 hidden lg:block">
              <div className="w-16 h-1 bg-cacu-accent/50 rounded-full mb-2"></div>
              <div className="w-8 h-1 bg-cacu-accent/30 rounded-full"></div>
@@ -125,7 +115,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
                         {item.subtitle}
                     </div>
                     
-                    <h2 className="text-white font-serif text-6xl lg:text-7xl font-medium leading-[1] tracking-tight mb-8">
+                    <h2 className="text-white font-serif text-6xl lg:text-7xl font-medium leading-[1] tracking-tight mb-8 whitespace-pre-line">
                         {item.title}
                     </h2>
                     <div className="w-full max-w-[200px] h-1 bg-cacu-primary mb-8"></div>
@@ -148,14 +138,6 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
 
   // --- 3. SUMMARY ---
   if (item.type === SectionType.SUMMARY) {
-      const summaryItems = [
-          { num: '01', label: 'Apresentação', desc: 'Mensagem do Presidente, Materialidade' },
-          { num: '02', label: 'Quem somos', desc: 'Perfil, Compromisso, Produtos' },
-          { num: '03', label: 'Meio ambiente', desc: 'Responsabilidade, Clima, Água' },
-          { num: '04', label: 'Social', desc: 'Colaboradores, Comunidade' },
-          { num: '05', label: 'Governança', desc: 'Estrutura, Ética, Compliance' },
-          { num: '06', label: 'Desempenho', desc: 'Operacional e Financeiro' },
-      ];
       return (
           <div className="min-h-screen bg-cacu-dark text-white px-8 lg:px-24 py-24 relative overflow-hidden flex flex-col justify-center section-page-break">
               <svg className="absolute top-24 left-0 w-full h-full pointer-events-none opacity-20" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -164,10 +146,10 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
 
               <div className="relative z-10 max-w-[1400px] mx-auto w-full">
                   <AnimatedBlock>
-                    <h2 className="text-6xl lg:text-8xl text-cacu-primary font-serif font-thin mb-24">Sumário</h2>
+                    <h2 className="text-6xl lg:text-8xl text-cacu-primary font-serif font-thin mb-24 whitespace-pre-line">{item.title}</h2>
                   </AnimatedBlock>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-20">
-                      {summaryItems.map((s, i) => (
+                      {item.summaryItems?.map((s, i) => (
                           <AnimatedBlock key={i} className={`delay-[${i * 100}ms]`}>
                               <div className="relative pl-4 hover:translate-x-2 transition-transform duration-300">
                                   <span className="absolute -top-12 left-0 text-6xl font-thin text-white/10">{s.num}</span>
@@ -187,8 +169,8 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
       return (
           <div className="min-h-screen bg-cacu-dark text-white py-24 px-0 flex flex-col justify-center overflow-hidden section-page-break">
               <AnimatedBlock className="px-8 lg:px-24 mb-12">
-                  <h2 className="text-5xl font-serif font-bold text-cacu-primary mb-4">{item.title}</h2>
-                  <p className="text-white/60 max-w-xl">Uma trajetória de crescimento sustentável e inovação constante.</p>
+                  <h2 className="text-5xl font-serif font-bold text-cacu-primary mb-4 whitespace-pre-line">{item.title}</h2>
+                  <p className="text-white/60 max-w-xl whitespace-pre-line">{item.subtitle || 'Uma trajetória de crescimento sustentável.'}</p>
               </AnimatedBlock>
               
               <div className="w-full overflow-x-auto pb-12 no-scrollbar px-8 lg:px-24">
@@ -224,7 +206,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
           <div className="min-h-screen bg-white py-32 px-8 lg:px-24 flex items-center section-page-break">
               <div className="max-w-7xl mx-auto w-full">
                   <AnimatedBlock>
-                    <h2 className="text-5xl lg:text-6xl text-cacu-dark font-serif font-light mb-24 text-center">
+                    <h2 className="text-5xl lg:text-6xl text-cacu-dark font-serif font-light mb-24 text-center whitespace-pre-line">
                         {item.title} <span className="text-cacu-primary font-bold">.</span>
                     </h2>
                   </AnimatedBlock>
@@ -253,7 +235,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
               <div className="max-w-7xl mx-auto">
                   <AnimatedBlock>
                     <div className="flex items-end gap-4 mb-16">
-                        <h2 className="text-6xl text-cacu-dark font-serif font-light">{item.title}</h2>
+                        <h2 className="text-6xl text-cacu-dark font-serif font-light whitespace-pre-line">{item.title}</h2>
                         <span className="text-cacu-primary font-bold text-sm uppercase tracking-widest mb-2 pb-2 border-b-2 border-cacu-primary">{item.subtitle}</span>
                     </div>
                   </AnimatedBlock>
@@ -289,30 +271,36 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
               <div className="max-w-6xl w-full text-center">
                   <AnimatedBlock>
                     <span className="text-cacu-primary font-bold tracking-widest uppercase text-xs">Estratégia ESG</span>
-                    <h2 className="text-5xl text-cacu-dark font-serif font-bold mb-16 mt-2">{item.title}</h2>
+                    <h2 className="text-5xl text-cacu-dark font-serif font-bold mb-16 mt-2 whitespace-pre-line">{item.title}</h2>
                   </AnimatedBlock>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
-                      <AnimatedBlock className="flex flex-col gap-4">
-                          <div className="bg-cacu-dark text-white py-3 rounded-t-2xl font-bold uppercase tracking-wider">Ambiental</div>
-                          <div className="bg-[#7AA874] text-white p-6 rounded-2xl shadow-md min-h-[120px] flex items-center justify-center text-center font-medium">Mudanças Climáticas</div>
-                          <div className="bg-[#9BC995] text-cacu-dark p-6 rounded-2xl shadow-md min-h-[120px] flex items-center justify-center text-center font-medium">Biodiversidade e Solo</div>
-                          <div className="bg-[#BFE1B9] text-cacu-dark p-6 rounded-2xl shadow-md min-h-[120px] flex items-center justify-center text-center font-medium">Gestão Hídrica</div>
-                      </AnimatedBlock>
+                      {item.materialityItems?.map((mat, i) => {
+                          // Simple color mapping
+                          let headerClass = 'bg-cacu-dark text-white';
+                          let cardClass = 'bg-gray-100 text-cacu-dark';
+                          if (mat.color === 'green') {
+                              headerClass = 'bg-cacu-dark text-white';
+                              cardClass = 'bg-[#9BC995] text-cacu-dark';
+                          } else if (mat.color === 'blue') {
+                              headerClass = 'bg-cacu-primary text-white';
+                              cardClass = 'bg-[#86EFAC] text-cacu-dark';
+                          } else if (mat.color === 'orange') {
+                              headerClass = 'bg-[#D4A017] text-white';
+                              cardClass = 'bg-[#FACC15] text-cacu-dark';
+                          }
 
-                      <AnimatedBlock className="flex flex-col gap-4 delay-100">
-                          <div className="bg-cacu-primary text-white py-3 rounded-t-2xl font-bold uppercase tracking-wider">Social</div>
-                          <div className="bg-[#009E49] text-white p-6 rounded-2xl shadow-md min-h-[120px] flex items-center justify-center text-center font-medium">Segurança e Saúde</div>
-                          <div className="bg-[#4ADE80] text-cacu-dark p-6 rounded-2xl shadow-md min-h-[120px] flex items-center justify-center text-center font-medium">Capital Humano</div>
-                          <div className="bg-[#86EFAC] text-cacu-dark p-6 rounded-2xl shadow-md min-h-[120px] flex items-center justify-center text-center font-medium">Comunidades</div>
-                      </AnimatedBlock>
-
-                      <AnimatedBlock className="flex flex-col gap-4 delay-200">
-                          <div className="bg-[#D4A017] text-white py-3 rounded-t-2xl font-bold uppercase tracking-wider">Governança</div>
-                          <div className="bg-[#EAB308] text-white p-6 rounded-2xl shadow-md min-h-[120px] flex items-center justify-center text-center font-medium">Ética e Compliance</div>
-                          <div className="bg-[#FACC15] text-cacu-dark p-6 rounded-2xl shadow-md min-h-[120px] flex items-center justify-center text-center font-medium">Gestão de Riscos</div>
-                          <div className="bg-[#FEF08A] text-cacu-dark p-6 rounded-2xl shadow-md min-h-[120px] flex items-center justify-center text-center font-medium">Inovação</div>
-                      </AnimatedBlock>
+                          return (
+                              <AnimatedBlock key={i} className={`flex flex-col gap-4 delay-${i*100}`}>
+                                  <div className={`${headerClass} py-3 rounded-t-2xl font-bold uppercase tracking-wider`}>{mat.category}</div>
+                                  {mat.topics.map((topic, j) => (
+                                      <div key={j} className={`${cardClass} p-6 rounded-2xl shadow-md min-h-[120px] flex items-center justify-center text-center font-medium opacity-90 hover:opacity-100 transition-opacity`}>
+                                          {topic}
+                                      </div>
+                                  ))}
+                              </AnimatedBlock>
+                          );
+                      })}
                   </div>
               </div>
           </div>
@@ -329,9 +317,9 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
                         <div className="w-16 h-16 bg-cacu-light rounded-2xl flex items-center justify-center text-cacu-primary mb-8">
                             <LucideIcons.BarChart2 size={32} />
                         </div>
-                        <h2 className="text-4xl font-serif font-bold text-cacu-dark mb-4">{item.title}</h2>
+                        <h2 className="text-4xl font-serif font-bold text-cacu-dark mb-4 whitespace-pre-line">{item.title}</h2>
                         <p className="text-cacu-primary font-bold uppercase tracking-wide text-sm mb-8">{item.subtitle}</p>
-                        <div className="prose text-gray-600 text-sm leading-relaxed">
+                        <div className="prose text-gray-600 text-sm leading-relaxed whitespace-pre-line">
                             {item.body}
                         </div>
                     </div>
@@ -365,7 +353,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
               
               <div className="max-w-7xl mx-auto w-full relative z-10">
                   <AnimatedBlock>
-                    <h2 className="text-6xl lg:text-8xl font-serif font-thin mb-20 leading-none">{item.title}</h2>
+                    <h2 className="text-6xl lg:text-8xl font-serif font-thin mb-20 leading-none whitespace-pre-line">{item.title}</h2>
                   </AnimatedBlock>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-16 gap-y-16">
                       {item.stats?.map((stat, idx) => (
@@ -375,7 +363,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
                                       <IconRenderer name={stat.icon} className="w-10 h-10 opacity-80 group-hover:opacity-100 transition-opacity" />
                                   </div>
                                   <div className="text-5xl font-bold font-sans mb-3 tracking-tight">{stat.value}</div>
-                                  <div className="text-base opacity-80 font-light leading-tight">{stat.description}</div>
+                                  <div className="text-base opacity-80 font-light leading-tight whitespace-pre-line">{stat.description}</div>
                               </div>
                           </AnimatedBlock>
                       ))}
@@ -397,12 +385,12 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
                         <span className="w-12 h-[2px] bg-cacu-primary"></span>
                         {item.subtitle}
                     </div>}
-                    <h2 className="text-5xl lg:text-6xl text-cacu-dark font-serif font-light leading-tight">
+                    <h2 className="text-5xl lg:text-6xl text-cacu-dark font-serif font-light leading-tight whitespace-pre-line">
                         {item.title}
                     </h2>
                 </div>
-                <div className="text-gray-600 text-lg leading-relaxed space-y-6 font-light">
-                    {item.body?.split('\n\n').map((para, i) => <p key={i}>{para}</p>)}
+                <div className="text-gray-600 text-lg leading-relaxed space-y-6 font-light whitespace-pre-line">
+                    {item.body}
                 </div>
             </AnimatedBlock>
         </div>
