@@ -119,7 +119,7 @@ export const ItemEditor: React.FC = () => {
                         </button>
                     </div>
                     <div className="flex-1 overflow-y-auto bg-white">
-                        <SectionRenderer item={item} />
+                        <SectionRenderer item={item} settings={data?.settings} />
                     </div>
                 </div>
             </div>

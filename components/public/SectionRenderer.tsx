@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef } from 'react';
-import { ContentItem, SectionType } from '../../types';
+import { ContentItem, SectionType, GlobalSettings } from '../../types';
 import { Logo } from '../Logo';
 import * as LucideIcons from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, LabelList } from 'recharts';
@@ -40,7 +40,7 @@ const AnimatedBlock: React.FC<{ children: React.ReactNode, className?: string }>
     );
 };
 
-export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
+export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSettings }> = ({ item, settings }) => {
   
   const bgClass = item.bgColor === 'blue' ? 'bg-cacu-dark' : item.bgColor === 'green' ? 'bg-cacu-primary' : 'bg-white';
   const textClass = item.bgColor === 'white' ? 'text-cacu-dark' : 'text-white';
@@ -48,11 +48,11 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
   // --- 1. COVER PAGE (REDESIGNED) ---
   if (item.type === SectionType.COVER) {
     return (
-      <div className="relative w-full h-[calc(100vh-6rem)] mt-0 lg:mt-0 lg:h-screen overflow-hidden bg-gray-200">
+      <div className="relative w-full h-[calc(100vh-6rem)] mt-0 lg:mt-0 lg:h-screen overflow-hidden bg-gray-200 section-page-break">
         
         {/* Left Side: Dark Green Organic Shape */}
         <div 
-            className="absolute top-0 left-0 h-full w-[120%] lg:w-[65%] bg-cacu-dark z-10"
+            className="absolute top-0 left-0 h-full w-[120%] lg:w-[65%] bg-cacu-dark z-10 print:bg-cacu-dark"
             style={{
                 borderBottomRightRadius: '100% 100%',
                 borderTopRightRadius: '20% 50%',
@@ -97,10 +97,10 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
                  <div className="flex justify-end mt-8">
                     {/* On Mobile: Light Mode Logo (over green). On Desktop: Dark/Color Mode Logo (over gray) */}
                     <div className="lg:hidden">
-                        <Logo mode="light" className="scale-125 origin-right" />
+                        <Logo mode="light" className="scale-125 origin-right" settings={settings} />
                     </div>
                     <div className="hidden lg:block">
-                        <Logo mode="dark" className="scale-150 origin-right" />
+                        <Logo mode="dark" className="scale-150 origin-right" settings={settings} />
                     </div>
                  </div>
             </div>
@@ -118,7 +118,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
   // --- 2. HERO PAGES ---
   if (item.type === SectionType.HERO) {
       return (
-          <div className={`min-h-screen ${bgClass} relative overflow-hidden flex flex-col lg:flex-row items-center justify-between`}>
+          <div className={`min-h-screen ${bgClass} relative overflow-hidden flex flex-col lg:flex-row items-center justify-between section-page-break`}>
               <div className="relative z-20 w-full lg:w-[45%] px-8 lg:px-24 py-12 lg:py-0 flex flex-col justify-center h-full">
                   <AnimatedBlock>
                     <div className="absolute top-32 right-12 text-right text-white/80 text-sm font-light hidden lg:block">
@@ -131,7 +131,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
                     <div className="w-full max-w-[200px] h-1 bg-cacu-primary mb-8"></div>
                     
                     <div className="mt-12">
-                        <Logo mode="light" className="scale-100 origin-left opacity-100" />
+                        <Logo mode="light" className="scale-100 origin-left opacity-100" settings={settings} />
                     </div>
                   </AnimatedBlock>
               </div>
@@ -157,7 +157,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
           { num: '06', label: 'Desempenho', desc: 'Operacional e Financeiro' },
       ];
       return (
-          <div className="min-h-screen bg-cacu-dark text-white px-8 lg:px-24 py-24 relative overflow-hidden flex flex-col justify-center">
+          <div className="min-h-screen bg-cacu-dark text-white px-8 lg:px-24 py-24 relative overflow-hidden flex flex-col justify-center section-page-break">
               <svg className="absolute top-24 left-0 w-full h-full pointer-events-none opacity-20" viewBox="0 0 100 100" preserveAspectRatio="none">
                   <path d="M0 20 Q 50 50 100 80" stroke="white" strokeWidth="0.5" fill="none" />
               </svg>
@@ -185,7 +185,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
   // --- 4. TIMELINE ---
   if (item.type === SectionType.TIMELINE) {
       return (
-          <div className="min-h-screen bg-cacu-dark text-white py-24 px-0 flex flex-col justify-center overflow-hidden">
+          <div className="min-h-screen bg-cacu-dark text-white py-24 px-0 flex flex-col justify-center overflow-hidden section-page-break">
               <AnimatedBlock className="px-8 lg:px-24 mb-12">
                   <h2 className="text-5xl font-serif font-bold text-cacu-primary mb-4">{item.title}</h2>
                   <p className="text-white/60 max-w-xl">Uma trajetória de crescimento sustentável e inovação constante.</p>
@@ -221,7 +221,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
   // --- 5. VALUES ---
   if (item.type === SectionType.VALUES) {
       return (
-          <div className="min-h-screen bg-white py-32 px-8 lg:px-24 flex items-center">
+          <div className="min-h-screen bg-white py-32 px-8 lg:px-24 flex items-center section-page-break">
               <div className="max-w-7xl mx-auto w-full">
                   <AnimatedBlock>
                     <h2 className="text-5xl lg:text-6xl text-cacu-dark font-serif font-light mb-24 text-center">
@@ -249,7 +249,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
   // --- 6. PRODUCTS ---
   if (item.type === SectionType.GRID_CARDS) {
       return (
-          <div className="min-h-screen bg-white py-32 px-8 lg:px-24">
+          <div className="min-h-screen bg-white py-32 px-8 lg:px-24 section-page-break">
               <div className="max-w-7xl mx-auto">
                   <AnimatedBlock>
                     <div className="flex items-end gap-4 mb-16">
@@ -285,7 +285,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
   // --- 7. MATERIALITY ---
   if (item.type === SectionType.MATERIALITY) {
       return (
-          <div className="min-h-screen bg-white py-32 px-4 overflow-hidden flex flex-col items-center justify-center">
+          <div className="min-h-screen bg-white py-32 px-4 overflow-hidden flex flex-col items-center justify-center section-page-break">
               <div className="max-w-6xl w-full text-center">
                   <AnimatedBlock>
                     <span className="text-cacu-primary font-bold tracking-widest uppercase text-xs">Estratégia ESG</span>
@@ -322,7 +322,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
   // --- 8. CHARTS ---
   if (item.type === SectionType.CHART) {
       return (
-          <div className="min-h-screen bg-gray-50 py-32 px-8 flex items-center justify-center">
+          <div className="min-h-screen bg-gray-50 py-32 px-8 flex items-center justify-center section-page-break">
               <AnimatedBlock>
                 <div className="bg-white p-8 lg:p-16 rounded-[3rem] shadow-2xl max-w-6xl w-full flex flex-col lg:flex-row gap-16 border border-gray-100">
                     <div className="lg:w-1/3 flex flex-col justify-center">
@@ -360,7 +360,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
   // --- 9. STATS ---
   if (item.type === SectionType.STATS) {
       return (
-          <div className="min-h-screen bg-cacu-primary relative flex flex-col justify-center px-6 lg:px-24 py-24 text-white overflow-hidden">
+          <div className="min-h-screen bg-cacu-primary relative flex flex-col justify-center px-6 lg:px-24 py-24 text-white overflow-hidden section-page-break">
               <div className="absolute -right-20 -top-20 w-[500px] h-[500px] rounded-full border-[40px] border-white/10 pointer-events-none animate-pulse"></div>
               
               <div className="max-w-7xl mx-auto w-full relative z-10">
@@ -388,7 +388,7 @@ export const SectionRenderer: React.FC<{ item: ContentItem }> = ({ item }) => {
   // --- 10. TEXT/IMAGE ---
   const isRight = item.layout === 'right';
   return (
-    <div className={`py-32 px-8 lg:px-24 bg-white min-h-screen flex items-center relative overflow-hidden`}>
+    <div className={`py-32 px-8 lg:px-24 bg-white min-h-screen flex items-center relative overflow-hidden section-page-break`}>
       <div className={`flex flex-col ${isRight ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-20 lg:gap-32 items-center w-full max-w-[1600px] mx-auto`}>
         <div className="w-full lg:w-1/2 z-10">
             <AnimatedBlock>
