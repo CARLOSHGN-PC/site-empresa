@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ContentService } from '../../services/contentService';
-import { ContentItem, SectionType, ChartDataPoint, MaterialityItem, SummaryItem, SocialLink, ContactLink } from '../../types';
-import { ArrowLeft, Save, Plus, Trash, Check, AlertCircle, Monitor, Smartphone, Layout, Type, Image as ImageIcon, List, Eye, X, PieChart, Layers, Video, Phone, Facebook, Linkedin, Instagram, Youtube, Globe, Mail, MessageCircle, ArrowUp, ArrowDown } from 'lucide-react';
+import { ContentItem, SectionType, ChartDataPoint, MaterialityItem, SummaryItem } from '../../types';
+import { ArrowLeft, Save, Plus, Trash, Check, AlertCircle, Monitor, Smartphone, Layout, Type, Image as ImageIcon, List, Eye, X, PieChart, Layers, Video } from 'lucide-react';
 import { AdminLayout } from './AdminLayout';
 import { SectionRenderer } from '../public/SectionRenderer';
 
@@ -76,17 +76,6 @@ export const ItemEditor: React.FC = () => {
       setItem({ ...item, [arrayName]: newArray });
   };
 
-  const moveArrayItem = (arrayName: keyof ContentItem, index: number, direction: 'up' | 'down') => {
-      if (!item) return;
-      const newArray = [...(item[arrayName] as any[])];
-      const newIndex = direction === 'up' ? index - 1 : index + 1;
-
-      if (newIndex < 0 || newIndex >= newArray.length) return;
-
-      [newArray[index], newArray[newIndex]] = [newArray[newIndex], newArray[index]];
-      setItem({ ...item, [arrayName]: newArray });
-  };
-
   if (!item) return <div>Carregando editor...</div>;
 
   const typeLabels: Record<string, string> = {
@@ -99,8 +88,7 @@ export const ItemEditor: React.FC = () => {
       [SectionType.VALUES]: 'Grid de Valores/Ícones',
       [SectionType.GRID_CARDS]: 'Grid de Cards com Imagem (Produtos)',
       [SectionType.CHART]: 'Gráfico de Barras',
-      [SectionType.MATERIALITY]: 'Matriz de Materialidade',
-      [SectionType.CONTACT]: 'Contato e Redes Sociais'
+      [SectionType.MATERIALITY]: 'Matriz de Materialidade'
   };
 
   return (
@@ -197,7 +185,7 @@ export const ItemEditor: React.FC = () => {
                                 <input type="text" value={item.subtitle || ''} onChange={e => setItem({...item, subtitle: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl focus:border-cacu-primary focus:ring-2 focus:ring-cacu-primary/20 outline-none transition-all text-gray-600" placeholder="Ex: GRI 2-6 ou Cargo do Funcionario" />
                             </div>
 
-                            {[SectionType.TEXT_IMAGE, SectionType.CHART, SectionType.HERO, SectionType.STATS, SectionType.CONTACT].includes(item.type) && (
+                            {[SectionType.TEXT_IMAGE, SectionType.CHART, SectionType.HERO, SectionType.STATS].includes(item.type) && (
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Texto Descritivo (Corpo)</label>
                                     <textarea rows={8} value={item.body || ''} onChange={e => setItem({...item, body: e.target.value})} className="w-full p-4 border border-gray-200 rounded-xl focus:border-cacu-primary focus:ring-2 focus:ring-cacu-primary/20 outline-none transition-all leading-relaxed text-gray-600" placeholder="Digite o conteúdo aqui... Use Enter para quebrar linhas." />
@@ -303,98 +291,6 @@ export const ItemEditor: React.FC = () => {
                 </div>
             </div>
 
-            {/* CONTACT EDITOR */}
-            {item.type === SectionType.CONTACT && (
-                <div className="space-y-8">
-                     <section className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-                        <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><Phone size={20} /></div>
-                                <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider">Informações de Contato</h2>
-                            </div>
-                            <button onClick={() => addArrayItem('contactLinks', { type: 'email', value: '', label: 'Email' })} className="text-white bg-cacu-primary hover:bg-green-600 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors shadow-md"><Plus size={16}/> Adicionar Contato</button>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {item.contactLinks?.map((link, idx) => (
-                                <div key={idx} className="bg-gray-50 p-4 rounded-xl border border-gray-200 relative flex gap-4 items-center">
-                                    <button onClick={() => removeArrayItem('contactLinks', idx)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500 transition-colors"><Trash size={14}/></button>
-                                    <div className="flex-1 space-y-2">
-                                        <div className="flex gap-2">
-                                            <select
-                                                value={link.type}
-                                                onChange={e => updateArrayItem('contactLinks', idx, 'type', e.target.value)}
-                                                className="bg-white border border-gray-200 rounded-lg text-xs p-1 outline-none"
-                                            >
-                                                <option value="email">Email</option>
-                                                <option value="phone">Telefone</option>
-                                                <option value="whatsapp">WhatsApp</option>
-                                            </select>
-                                            <input
-                                                value={link.label}
-                                                onChange={e => updateArrayItem('contactLinks', idx, 'label', e.target.value)}
-                                                placeholder="Rótulo (ex: Comercial)"
-                                                className="flex-1 bg-white border border-gray-200 rounded-lg text-xs p-1 outline-none"
-                                            />
-                                        </div>
-                                        <input
-                                            value={link.value}
-                                            onChange={e => updateArrayItem('contactLinks', idx, 'value', e.target.value)}
-                                            placeholder="Valor (email ou número)"
-                                            className="w-full bg-white border border-gray-200 rounded-lg text-sm p-2 font-bold text-cacu-dark outline-none"
-                                        />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                     </section>
-
-                     <section className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-                        <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><Globe size={20} /></div>
-                                <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider">Redes Sociais</h2>
-                            </div>
-                            <button onClick={() => addArrayItem('socialLinks', { platform: 'instagram', url: '' })} className="text-white bg-cacu-primary hover:bg-green-600 px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-colors shadow-md"><Plus size={16}/> Adicionar Rede</button>
-                        </div>
-                        <div className="space-y-4">
-                            {item.socialLinks?.map((link, idx) => (
-                                <div key={idx} className="flex items-center gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200 relative">
-                                    <button onClick={() => removeArrayItem('socialLinks', idx)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500 transition-colors"><Trash size={14}/></button>
-
-                                    <div className="p-3 bg-white rounded-lg shadow-sm">
-                                        {link.platform === 'instagram' && <Instagram className="text-pink-600" size={20} />}
-                                        {link.platform === 'facebook' && <Facebook className="text-blue-600" size={20} />}
-                                        {link.platform === 'linkedin' && <Linkedin className="text-blue-700" size={20} />}
-                                        {link.platform === 'youtube' && <Youtube className="text-red-600" size={20} />}
-                                        {link.platform === 'website' && <Globe className="text-gray-600" size={20} />}
-                                    </div>
-
-                                    <div className="flex-1 flex flex-col gap-2">
-                                        <select
-                                            value={link.platform}
-                                            onChange={e => updateArrayItem('socialLinks', idx, 'platform', e.target.value)}
-                                            className="bg-white border border-gray-200 rounded-lg text-xs p-1 outline-none w-fit"
-                                        >
-                                            <option value="instagram">Instagram</option>
-                                            <option value="linkedin">LinkedIn</option>
-                                            <option value="facebook">Facebook</option>
-                                            <option value="youtube">YouTube</option>
-                                            <option value="website">Site / Outro</option>
-                                        </select>
-                                        <input
-                                            value={link.url}
-                                            onChange={e => updateArrayItem('socialLinks', idx, 'url', e.target.value)}
-                                            placeholder="URL Completa (https://...)"
-                                            className="w-full bg-white border border-gray-200 rounded-lg text-sm p-2 text-blue-600 outline-none"
-                                        />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                     </section>
-                </div>
-            )}
-
             {/* List Editors (Timeline, etc) - kept same structure but ensuring full render */}
             {item.type === SectionType.TIMELINE && (
                 <section className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
@@ -408,11 +304,7 @@ export const ItemEditor: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {item.timelineEvents?.map((evt, idx) => (
                             <div key={idx} className="bg-gray-50 p-6 rounded-2xl border border-gray-200 relative group hover:border-cacu-primary/30 hover:shadow-md transition-all">
-                                <div className="absolute top-4 right-4 flex gap-1">
-                                    <button onClick={() => moveArrayItem('timelineEvents', idx, 'up')} className="text-gray-300 hover:text-cacu-primary p-1"><ArrowUp size={14}/></button>
-                                    <button onClick={() => moveArrayItem('timelineEvents', idx, 'down')} className="text-gray-300 hover:text-cacu-primary p-1"><ArrowDown size={14}/></button>
-                                    <button onClick={() => removeArrayItem('timelineEvents', idx)} className="text-gray-300 hover:text-red-500 p-1 ml-2"><Trash size={14}/></button>
-                                </div>
+                                <button onClick={() => removeArrayItem('timelineEvents', idx)} className="absolute top-4 right-4 text-gray-300 hover:text-red-500 transition-colors p-1"><Trash size={16}/></button>
                                 <div className="flex gap-4 mb-4">
                                     <div className="w-24">
                                         <label className="text-[10px] uppercase font-extrabold text-gray-400 mb-1 block">Ano</label>
@@ -510,11 +402,7 @@ export const ItemEditor: React.FC = () => {
                     <div className="space-y-4">
                         {item.summaryItems?.map((sum, idx) => (
                             <div key={idx} className="flex gap-4 items-start bg-gray-50 p-4 rounded-xl border border-gray-200 relative">
-                                <div className="absolute top-2 right-2 flex gap-1">
-                                    <button onClick={() => moveArrayItem('summaryItems', idx, 'up')} className="text-gray-300 hover:text-cacu-primary p-1"><ArrowUp size={14}/></button>
-                                    <button onClick={() => moveArrayItem('summaryItems', idx, 'down')} className="text-gray-300 hover:text-cacu-primary p-1"><ArrowDown size={14}/></button>
-                                    <button onClick={() => removeArrayItem('summaryItems', idx)} className="text-gray-300 hover:text-red-500 p-1 ml-2"><Trash size={14}/></button>
-                                </div>
+                                <button onClick={() => removeArrayItem('summaryItems', idx)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500 transition-colors"><Trash size={14}/></button>
                                 <div className="w-16">
                                     <label className="text-[10px] uppercase font-extrabold text-gray-400 mb-1 block">Num</label>
                                     <input value={sum.num} onChange={e => updateArrayItem('summaryItems', idx, 'num', e.target.value)} className="w-full p-2 bg-white border border-gray-200 rounded-lg text-center font-bold outline-none" />
@@ -547,12 +435,7 @@ export const ItemEditor: React.FC = () => {
                     </div>
                     <div className="space-y-4">
                         {(item.products || item.values || item.stats)?.map((obj: any, idx: number) => (
-                            <div key={idx} className="flex gap-6 items-start p-6 bg-gray-50 rounded-2xl border border-gray-200 group hover:border-cacu-primary/30 hover:bg-white hover:shadow-md transition-all relative">
-                                <div className="absolute top-4 right-4 flex gap-1">
-                                    <button onClick={() => moveArrayItem(item.type === SectionType.STATS ? 'stats' : item.type === SectionType.VALUES ? 'values' : 'products', idx, 'up')} className="text-gray-300 hover:text-cacu-primary p-1"><ArrowUp size={14}/></button>
-                                    <button onClick={() => moveArrayItem(item.type === SectionType.STATS ? 'stats' : item.type === SectionType.VALUES ? 'values' : 'products', idx, 'down')} className="text-gray-300 hover:text-cacu-primary p-1"><ArrowDown size={14}/></button>
-                                    <button onClick={() => removeArrayItem(item.type === SectionType.STATS ? 'stats' : item.type === SectionType.VALUES ? 'values' : 'products', idx)} className="text-gray-300 hover:text-red-500 p-1 ml-2"><Trash size={14}/></button>
-                                </div>
+                            <div key={idx} className="flex gap-6 items-start p-6 bg-gray-50 rounded-2xl border border-gray-200 group hover:border-cacu-primary/30 hover:bg-white hover:shadow-md transition-all">
                                 <div className="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6">
                                     {/* Title/Label */}
                                     <div className="md:col-span-3">
@@ -589,6 +472,7 @@ export const ItemEditor: React.FC = () => {
                                         )}
                                     </div>
                                 </div>
+                                <button onClick={() => removeArrayItem(item.type === SectionType.STATS ? 'stats' : item.type === SectionType.VALUES ? 'values' : 'products', idx)} className="mt-8 text-gray-300 hover:text-red-500 transition-colors bg-white p-2 rounded-lg hover:bg-red-50 border border-transparent hover:border-red-100"><Trash size={18}/></button>
                             </div>
                         ))}
                     </div>
