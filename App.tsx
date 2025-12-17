@@ -39,9 +39,9 @@ const PublicView: React.FC = () => {
         <Navigation sections={data.sections} settings={data.settings} isOpen={isNavOpen} setIsOpen={setIsNavOpen} />
       </div>
       
-      <main className="snap-y snap-mandatory h-screen overflow-y-scroll scroll-smooth print:h-auto print:overflow-visible">
+      <main className="snap-y snap-proximity h-screen overflow-y-scroll scroll-smooth print:h-auto print:overflow-visible">
         {data.sections.map(section => (
-          <div key={section.id} id={section.id} className="snap-start snap-always">
+          <div key={section.id} id={section.id} className="snap-start">
              {section.items.map(item => (
                <SectionRenderer key={item.id} item={item} settings={data.settings} />
              ))}

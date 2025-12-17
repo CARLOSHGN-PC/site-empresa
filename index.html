@@ -108,14 +108,21 @@
           background: white;
           -webkit-print-color-adjust: exact !important;
           print-color-adjust: exact !important;
+          /* Add top padding to every page to account for the fixed header */
+          padding-top: 100px;
+        }
+        /* Ensure the fixed header doesn't cover content on subsequent pages */
+        header {
+          position: fixed;
+          top: 0;
         }
         .section-page-break {
           break-after: always;
           page-break-after: always;
-          min-height: 100vh;
-          height: 100vh;
-          width: 100vw;
-          overflow: hidden;
+          min-height: calc(100vh - 100px); /* Adjust height for header */
+          height: auto;
+          width: 100%;
+          overflow: visible;
         }
         /* Ensure animations are finished for print */
         .animate-on-scroll {
