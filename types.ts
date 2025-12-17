@@ -31,6 +31,8 @@ export interface ContentItem {
   subtitle?: string;
   body?: string; 
   imageUrl?: string;
+  videoUrl?: string; // URL for video background
+  mediaType?: 'image' | 'video'; // Toggle between image and video
   imageOverlayOpacity?: number; // 0 to 100
   imagePosition?: 'top' | 'center' | 'bottom';
   imageCaption?: string;

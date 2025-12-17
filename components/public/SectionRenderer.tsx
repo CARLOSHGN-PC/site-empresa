@@ -141,7 +141,11 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
 
               <div className="relative w-full lg:w-[55%] h-[60vh] lg:h-screen z-10">
                   <div className="w-full h-full hero-leaf-mask bg-gray-900 relative shadow-[-50px_0_100px_rgba(0,0,0,0.5)]">
-                      <img src={item.imageUrl} className={`w-full h-full object-cover opacity-90 object-${item.imagePosition || 'center'}`} alt="Hero" />
+                      {item.mediaType === 'video' && item.videoUrl ? (
+                          <video src={item.videoUrl} className="w-full h-full object-cover opacity-90" autoPlay muted loop playsInline />
+                      ) : (
+                          <img src={item.imageUrl} className={`w-full h-full object-cover opacity-90 object-${item.imagePosition || 'center'}`} alt="Hero" />
+                      )}
                       <div className="absolute inset-0 bg-black pointer-events-none" style={{ opacity: (item.imageOverlayOpacity || 0) / 100 }}></div>
                   </div>
                   <div className="absolute bottom-0 left-0 w-full h-full hero-leaf-mask border-l-[20px] border-b-[20px] border-cacu-primary/20 pointer-events-none"></div>

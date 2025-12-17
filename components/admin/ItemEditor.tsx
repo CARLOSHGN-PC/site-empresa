@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ContentService } from '../../services/contentService';
 import { ContentItem, SectionType, ChartDataPoint, MaterialityItem, SummaryItem } from '../../types';
-import { ArrowLeft, Save, Plus, Trash, Check, AlertCircle, Monitor, Smartphone, Layout, Type, Image as ImageIcon, List, Eye, X, PieChart, Layers } from 'lucide-react';
+import { ArrowLeft, Save, Plus, Trash, Check, AlertCircle, Monitor, Smartphone, Layout, Type, Image as ImageIcon, List, Eye, X, PieChart, Layers, Video } from 'lucide-react';
 import { AdminLayout } from './AdminLayout';
 import { SectionRenderer } from '../public/SectionRenderer';
 
@@ -198,25 +198,61 @@ export const ItemEditor: React.FC = () => {
                 <div className="space-y-8">
                     {[SectionType.HERO, SectionType.TEXT_IMAGE, SectionType.COVER].includes(item.type) && (
                         <section className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-                            <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-50">
-                                <div className="p-2 bg-orange-50 text-orange-600 rounded-lg"><ImageIcon size={20} /></div>
-                                <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider">Imagem</h2>
+                            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-50">
+                                <div className="flex items-center gap-3">
+                                    <div className="p-2 bg-orange-50 text-orange-600 rounded-lg"><ImageIcon size={20} /></div>
+                                    <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wider">Mídia (Imagem ou Vídeo)</h2>
+                                </div>
+                                <div className="flex bg-gray-100 p-1 rounded-lg">
+                                    <button
+                                        onClick={() => setItem({...item, mediaType: 'image'})}
+                                        className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${(!item.mediaType || item.mediaType === 'image') ? 'bg-white shadow-sm text-cacu-primary' : 'text-gray-500 hover:text-gray-700'}`}
+                                    >
+                                        Imagem
+                                    </button>
+                                    <button
+                                        onClick={() => setItem({...item, mediaType: 'video'})}
+                                        className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${item.mediaType === 'video' ? 'bg-white shadow-sm text-cacu-primary' : 'text-gray-500 hover:text-gray-700'}`}
+                                    >
+                                        Vídeo
+                                    </button>
+                                </div>
                             </div>
+
                             <div className="space-y-4">
                                 <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden border border-gray-200 relative group shadow-inner">
-                                    {item.imageUrl ? (
-                                        <img src={item.imageUrl} className="w-full h-full object-cover" alt="Preview" />
+                                    {item.mediaType === 'video' ? (
+                                        item.videoUrl ? (
+                                            <video src={item.videoUrl} className="w-full h-full object-cover" autoPlay muted loop playsInline />
+                                        ) : (
+                                            <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
+                                                <Video size={32} className="mb-2 opacity-50" />
+                                                <span className="text-xs font-medium">Sem Vídeo</span>
+                                            </div>
+                                        )
                                     ) : (
-                                        <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
-                                            <ImageIcon size={32} className="mb-2 opacity-50" />
-                                            <span className="text-xs font-medium">Sem Imagem</span>
-                                        </div>
+                                        item.imageUrl ? (
+                                            <img src={item.imageUrl} className="w-full h-full object-cover" alt="Preview" />
+                                        ) : (
+                                            <div className="w-full h-full flex flex-col items-center justify-center text-gray-400">
+                                                <ImageIcon size={32} className="mb-2 opacity-50" />
+                                                <span className="text-xs font-medium">Sem Imagem</span>
+                                            </div>
+                                        )
                                     )}
                                 </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">URL da Imagem</label>
-                                    <input type="text" value={item.imageUrl || ''} onChange={e => setItem({...item, imageUrl: e.target.value})} className="w-full p-3 text-xs border border-gray-200 rounded-xl focus:border-cacu-primary focus:ring-2 focus:ring-cacu-primary/20 outline-none font-mono text-blue-600 break-all" placeholder="https://..." />
-                                </div>
+
+                                {item.mediaType === 'video' ? (
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">URL do Vídeo (MP4, WebM)</label>
+                                        <input type="text" value={item.videoUrl || ''} onChange={e => setItem({...item, videoUrl: e.target.value})} className="w-full p-3 text-xs border border-gray-200 rounded-xl focus:border-cacu-primary focus:ring-2 focus:ring-cacu-primary/20 outline-none font-mono text-blue-600 break-all" placeholder="https://exemplo.com/video.mp4" />
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">URL da Imagem</label>
+                                        <input type="text" value={item.imageUrl || ''} onChange={e => setItem({...item, imageUrl: e.target.value})} className="w-full p-3 text-xs border border-gray-200 rounded-xl focus:border-cacu-primary focus:ring-2 focus:ring-cacu-primary/20 outline-none font-mono text-blue-600 break-all" placeholder="https://..." />
+                                    </div>
+                                )}
 
                                 <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-50">
                                     <div>
@@ -234,18 +270,20 @@ export const ItemEditor: React.FC = () => {
                                             <span className="text-sm font-bold text-gray-700 min-w-[2.5rem]">{item.imageOverlayOpacity !== undefined ? item.imageOverlayOpacity : 10}%</span>
                                         </div>
                                     </div>
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Foco da Imagem</label>
-                                        <select
-                                            value={item.imagePosition || 'center'}
-                                            onChange={e => setItem({...item, imagePosition: e.target.value as any})}
-                                            className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none"
-                                        >
-                                            <option value="top">Topo</option>
-                                            <option value="center">Centro</option>
-                                            <option value="bottom">Baixo</option>
-                                        </select>
-                                    </div>
+                                    {(!item.mediaType || item.mediaType === 'image') && (
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Foco da Imagem</label>
+                                            <select
+                                                value={item.imagePosition || 'center'}
+                                                onChange={e => setItem({...item, imagePosition: e.target.value as any})}
+                                                className="w-full p-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none"
+                                            >
+                                                <option value="top">Topo</option>
+                                                <option value="center">Centro</option>
+                                                <option value="bottom">Baixo</option>
+                                            </select>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </section>
