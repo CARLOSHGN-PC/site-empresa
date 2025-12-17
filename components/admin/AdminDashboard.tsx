@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { AppData, SectionType, GlobalSettings } from '../../types';
 import { ContentService } from '../../services/contentService';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Edit, PlusCircle, Trash2, Image as ImageIcon, BarChart2, Clock, Type, LayoutTemplate, ChevronRight, Settings, Search, X, Save, Palette, Edit3, ArrowUp, ArrowDown } from 'lucide-react';
+import { Edit, PlusCircle, Trash2, Image as ImageIcon, BarChart2, Clock, Type, LayoutTemplate, ChevronRight, Settings, Search, X, Save, Palette, Edit3, ArrowUp, ArrowDown, Copy, Phone } from 'lucide-react';
 import { AdminLayout } from './AdminLayout';
 
 export const AdminDashboard: React.FC = () => {
@@ -60,6 +60,20 @@ export const AdminDashboard: React.FC = () => {
       }
   };
 
+  const handleDuplicateItem = async (sectionId: string, itemId: string) => {
+      if (confirm('Deseja duplicar este bloco?')) {
+          await ContentService.duplicateContentItem(sectionId, itemId);
+          const d = await ContentService.getData();
+          setData(d);
+      }
+  };
+
+  const handleReorderItem = async (sectionId: string, itemId: string, direction: 'up' | 'down') => {
+      await ContentService.reorderContentItem(sectionId, itemId, direction);
+      const d = await ContentService.getData();
+      setData(d);
+  };
+
   const handleRenameSection = async (e: React.FormEvent) => {
       e.preventDefault();
       if (activeSectionId && newSectionTitle.trim()) {
@@ -93,6 +107,7 @@ export const AdminDashboard: React.FC = () => {
           case SectionType.STATS: return <BarChart2 size={24} className="text-green-500" />;
           case SectionType.HERO: 
           case SectionType.COVER: return <ImageIcon size={24} className="text-blue-500" />;
+          case SectionType.CONTACT: return <Phone size={24} className="text-indigo-500" />;
           default: return <Type size={24} className="text-gray-500" />;
       }
   };
@@ -107,6 +122,7 @@ export const AdminDashboard: React.FC = () => {
           case SectionType.GRID_CARDS: return "Grade de Cards";
           case SectionType.VALUES: return "Valores";
           case SectionType.MATERIALITY: return "Matriz";
+          case SectionType.CONTACT: return "Contato / Social";
           default: return "Texto e Imagem";
       }
   };
@@ -192,7 +208,20 @@ export const AdminDashboard: React.FC = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                         {activeSection.items.map((item, idx) => (
-                            <div key={item.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-cacu-primary/30 transition-all group flex flex-col h-full">
+                            <div key={item.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg hover:border-cacu-primary/30 transition-all group flex flex-col h-full relative">
+                                {/* Actions Overlay (Reorder / Delete) */}
+                                <div className="absolute top-4 right-4 z-20 flex gap-2">
+                                    <button onClick={() => handleReorderItem(activeSection.id, item.id, 'up')} className="p-1.5 bg-white/80 hover:bg-white text-gray-500 hover:text-cacu-primary rounded-lg shadow-sm backdrop-blur-sm" title="Mover para cima">
+                                        <ArrowUp size={14} />
+                                    </button>
+                                    <button onClick={() => handleReorderItem(activeSection.id, item.id, 'down')} className="p-1.5 bg-white/80 hover:bg-white text-gray-500 hover:text-cacu-primary rounded-lg shadow-sm backdrop-blur-sm" title="Mover para baixo">
+                                        <ArrowDown size={14} />
+                                    </button>
+                                    <button onClick={() => handleDuplicateItem(activeSection.id, item.id)} className="p-1.5 bg-white/80 hover:bg-white text-gray-500 hover:text-blue-500 rounded-lg shadow-sm backdrop-blur-sm" title="Duplicar">
+                                        <Copy size={14} />
+                                    </button>
+                                </div>
+
                                 {/* Card Header / Preview */}
                                 <div className="h-48 bg-gray-50 relative overflow-hidden border-b border-gray-100">
                                     {item.imageUrl ? (

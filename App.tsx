@@ -10,6 +10,9 @@ import { ContentService } from './services/contentService';
 import { AuthService } from './services/authService';
 import { AppData } from './types';
 import { Lock } from 'lucide-react';
+import { ThemeToggle } from './components/public/ThemeToggle';
+import { ScrollToTop } from './components/public/ScrollToTop';
+import { PDFButton } from './components/public/PDFButton';
 
 const RequireAuth = ({ children }: { children: React.ReactElement }) => {
     if (!AuthService.isAuthenticated()) {
@@ -34,7 +37,7 @@ const PublicView: React.FC = () => {
   if (!data) return <div className="flex h-screen items-center justify-center text-cacu-dark font-bold animate-pulse">Carregando relatório...</div>;
 
   return (
-    <div className="h-screen w-full overflow-hidden bg-gray-50 print:h-auto print:overflow-visible">
+    <div className="h-screen w-full overflow-hidden bg-gray-50 dark:bg-gray-900 transition-colors duration-500 print:h-auto print:overflow-visible">
       <div className="">
         <Navigation sections={data.sections} settings={data.settings} isOpen={isNavOpen} setIsOpen={setIsNavOpen} />
       </div>
@@ -60,6 +63,11 @@ const PublicView: React.FC = () => {
             </div>
         </footer>
       </main>
+
+      {/* Floating Buttons */}
+      <ThemeToggle />
+      <ScrollToTop />
+      <PDFButton />
 
       {/* Floating Admin Access Button */}
       <Link to="/admin" className="fixed bottom-4 left-4 z-50 bg-white/50 hover:bg-white text-cacu-dark p-2 rounded-full shadow-sm backdrop-blur-sm transition-all opacity-50 hover:opacity-100 border border-gray-200 print:hidden" title="Acesso Admin">
@@ -105,6 +113,13 @@ const App: React.FC = () => {
                         font-family: 'Inter', sans-serif !important;
                     }
                 ` : ''}
+
+                /* Dark Mode Overrides */
+                .dark .bg-white { background-color: #111827 !important; color: #f3f4f6 !important; }
+                .dark .text-gray-600, .dark .text-gray-500, .dark .text-gray-800 { color: #9ca3af !important; }
+                .dark .border-gray-100, .dark .border-gray-200 { border-color: #374151 !important; }
+                .dark .bg-gray-50, .dark .bg-gray-100 { background-color: #1f2937 !important; }
+                .dark .text-cacu-dark { color: #ffffff !important; }
             `}</style>
         )}
         <Router>
