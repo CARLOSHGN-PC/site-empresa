@@ -7,7 +7,12 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 
 const IconRenderer = ({ name, className }: { name?: string, className?: string }) => {
     if (!name) return null;
-    const Icon = (LucideIcons as any)[name] || LucideIcons.Circle;
+
+    const cleanName = name.trim();
+    // Try exact match first, then kebab-to-PascalCase conversion
+    const pascalName = cleanName.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
+
+    const Icon = (LucideIcons as any)[cleanName] || (LucideIcons as any)[pascalName] || LucideIcons.Circle;
     return <Icon className={className} />;
 };
 
