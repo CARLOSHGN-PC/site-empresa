@@ -39,7 +39,7 @@ export const Navigation: React.FC<Props> = ({ sections, settings, isOpen, setIsO
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm h-24 flex items-center justify-between px-6 lg:px-12 border-b border-gray-100 transition-all">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm h-24 flex items-center justify-between px-6 lg:px-12 border-b border-gray-100 transition-all print:absolute print:bg-white print:shadow-none print:border-b-2 print:border-cacu-primary">
         <div className="flex items-center gap-6 cursor-pointer" onClick={() => navigate('/')}>
             <Logo mode="dark" className="scale-90 origin-left" settings={settings} />
             
@@ -72,7 +72,7 @@ export const Navigation: React.FC<Props> = ({ sections, settings, isOpen, setIsO
         {/* Mobile Menu Button */}
         <button 
             onClick={() => setIsOpen(!isOpen)} 
-            className="lg:hidden text-cacu-dark p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="lg:hidden text-cacu-dark p-2 hover:bg-gray-100 rounded-lg transition-colors print:hidden"
         >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
