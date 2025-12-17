@@ -430,16 +430,19 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
             </AnimatedBlock>
         </div>
         {(item.imageUrl || (item.mediaType === 'video' && item.videoUrl)) && (
-            <div className="w-full lg:w-1/2 relative h-[600px]">
+            <div className={`w-full lg:w-1/2 relative ${item.mediaType === 'video' && item.videoUrl ? 'h-auto' : 'h-[600px]'}`}>
                 <AnimatedBlock>
-                    <div className="absolute inset-0 w-full h-full rounded-[4rem] overflow-hidden shadow-2xl rotate-1 hover:rotate-0 transition-transform duration-700 bg-black">
-                        {item.mediaType === 'video' && item.videoUrl ? (
-                            <video src={item.videoUrl} className="w-full h-full object-contain" autoPlay muted loop playsInline />
-                        ) : (
+                    {item.mediaType === 'video' && item.videoUrl ? (
+                         <div className="relative w-full rounded-[3rem] overflow-hidden shadow-2xl bg-black">
+                             <video src={item.videoUrl} className="w-full h-auto block" autoPlay muted loop playsInline />
+                             <div className="absolute inset-0 bg-black pointer-events-none" style={{ opacity: (item.imageOverlayOpacity || 0) / 100 }}></div>
+                         </div>
+                    ) : (
+                        <div className="absolute inset-0 w-full h-full rounded-[4rem] overflow-hidden shadow-2xl rotate-1 hover:rotate-0 transition-transform duration-700 bg-gray-100">
                             <img src={item.imageUrl} alt="Content" className={`w-full h-full object-cover scale-110 object-${item.imagePosition || 'center'}`} />
-                        )}
-                        <div className="absolute inset-0 bg-black pointer-events-none" style={{ opacity: (item.imageOverlayOpacity || 0) / 100 }}></div>
-                    </div>
+                            <div className="absolute inset-0 bg-black pointer-events-none" style={{ opacity: (item.imageOverlayOpacity || 0) / 100 }}></div>
+                        </div>
+                    )}
                     <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-cacu-primary rounded-full -z-10 opacity-20"></div>
                 </AnimatedBlock>
             </div>
