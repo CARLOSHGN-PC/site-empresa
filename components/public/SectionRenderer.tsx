@@ -432,9 +432,9 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
         {(item.imageUrl || (item.mediaType === 'video' && item.videoUrl)) && (
             <div className="w-full lg:w-1/2 relative h-[600px]">
                 <AnimatedBlock>
-                    <div className="absolute inset-0 w-full h-full rounded-[4rem] overflow-hidden shadow-2xl rotate-1 hover:rotate-0 transition-transform duration-700 bg-gray-100">
+                    <div className="absolute inset-0 w-full h-full rounded-[4rem] overflow-hidden shadow-2xl rotate-1 hover:rotate-0 transition-transform duration-700 bg-black">
                         {item.mediaType === 'video' && item.videoUrl ? (
-                            <video src={item.videoUrl} className="w-full h-full object-cover scale-110" autoPlay muted loop playsInline />
+                            <video src={item.videoUrl} className="w-full h-full object-contain" autoPlay muted loop playsInline />
                         ) : (
                             <img src={item.imageUrl} alt="Content" className={`w-full h-full object-cover scale-110 object-${item.imagePosition || 'center'}`} />
                         )}
