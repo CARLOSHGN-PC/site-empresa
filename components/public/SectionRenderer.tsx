@@ -65,14 +65,23 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
             <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay"></div>
         </div>
 
-        {item.imageUrl && (
+        {(item.imageUrl || (item.mediaType === 'video' && item.videoUrl)) && (
             <div className="absolute inset-0 z-0">
-                 <img 
-                    src={item.imageUrl} 
-                    alt="Background" 
-                    className={`w-full h-full object-cover opacity-100 lg:ml-[30%] object-${item.imagePosition || 'center'}`}
-                    style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 100%)' }}
-                />
+                 {item.mediaType === 'video' && item.videoUrl ? (
+                    <video
+                        src={item.videoUrl}
+                        className="w-full h-full object-cover opacity-100 lg:ml-[30%] object-center"
+                        style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 100%)' }}
+                        autoPlay muted loop playsInline
+                    />
+                 ) : (
+                    <img
+                        src={item.imageUrl}
+                        alt="Background"
+                        className={`w-full h-full object-cover opacity-100 lg:ml-[30%] object-${item.imagePosition || 'center'}`}
+                        style={{ maskImage: 'linear-gradient(to right, transparent 0%, black 100%)' }}
+                    />
+                 )}
                 {/* Dynamic Overlay for Visibility */}
                 <div
                     className="absolute inset-0 bg-black pointer-events-none lg:ml-[30%]"
@@ -420,11 +429,15 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
                 </div>
             </AnimatedBlock>
         </div>
-        {item.imageUrl && (
+        {(item.imageUrl || (item.mediaType === 'video' && item.videoUrl)) && (
             <div className="w-full lg:w-1/2 relative h-[600px]">
                 <AnimatedBlock>
                     <div className="absolute inset-0 w-full h-full rounded-[4rem] overflow-hidden shadow-2xl rotate-1 hover:rotate-0 transition-transform duration-700 bg-gray-100">
-                        <img src={item.imageUrl} alt="Content" className={`w-full h-full object-cover scale-110 object-${item.imagePosition || 'center'}`} />
+                        {item.mediaType === 'video' && item.videoUrl ? (
+                            <video src={item.videoUrl} className="w-full h-full object-cover scale-110" autoPlay muted loop playsInline />
+                        ) : (
+                            <img src={item.imageUrl} alt="Content" className={`w-full h-full object-cover scale-110 object-${item.imagePosition || 'center'}`} />
+                        )}
                         <div className="absolute inset-0 bg-black pointer-events-none" style={{ opacity: (item.imageOverlayOpacity || 0) / 100 }}></div>
                     </div>
                     <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-cacu-primary rounded-full -z-10 opacity-20"></div>
