@@ -9,7 +9,8 @@ export enum SectionType {
   VALUES = 'VALUES',      // For Mission/Vision/Values
   GRID_CARDS = 'GRID_CARDS', // For Products
   CHART = 'CHART',        // For Emissions
-  MATERIALITY = 'MATERIALITY' // For Materiality Matrix
+  MATERIALITY = 'MATERIALITY', // For Materiality Matrix
+  CONTACT = 'CONTACT'     // New Contact/Feedback Section
 }
 
 export interface GlobalSettings {
@@ -43,8 +44,21 @@ export interface ContentItem {
   chartData?: ChartDataPoint[];
   summaryItems?: SummaryItem[];
   materialityItems?: MaterialityItem[];
+  socialLinks?: SocialLink[];
+  contactLinks?: ContactLink[];
   bgColor?: 'blue' | 'white' | 'green'; 
   layout?: 'left' | 'right' | 'center';
+}
+
+export interface SocialLink {
+  platform: 'linkedin' | 'instagram' | 'facebook' | 'youtube' | 'website';
+  url: string;
+}
+
+export interface ContactLink {
+  type: 'email' | 'whatsapp' | 'phone';
+  value: string;
+  label: string;
 }
 
 export interface SummaryItem {

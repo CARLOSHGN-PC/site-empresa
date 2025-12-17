@@ -408,7 +408,69 @@ export const SectionRenderer: React.FC<{ item: ContentItem; settings?: GlobalSet
       );
   }
 
-  // --- 10. TEXT/IMAGE ---
+  // --- 10. CONTACT / SOCIAL (NEW) ---
+  if (item.type === SectionType.CONTACT) {
+      return (
+          <div className={`min-h-screen ${bgClass} py-32 px-8 lg:px-24 flex items-center justify-center section-page-break`}>
+              <div className="max-w-4xl w-full text-center">
+                  <AnimatedBlock>
+                      <h2 className={`text-5xl font-serif font-bold mb-6 whitespace-pre-line ${textClass}`}>{item.title || 'Fale Conosco'}</h2>
+                      <p className={`text-xl opacity-70 mb-12 leading-relaxed whitespace-pre-line ${textClass}`}>{item.body}</p>
+
+                      {/* Direct Contacts */}
+                      {item.contactLinks && item.contactLinks.length > 0 && (
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+                              {item.contactLinks.map((contact, i) => {
+                                  let href = '#';
+                                  let icon = LucideIcons.Mail;
+                                  if (contact.type === 'email') { href = `mailto:${contact.value}`; icon = LucideIcons.Mail; }
+                                  if (contact.type === 'phone') { href = `tel:${contact.value}`; icon = LucideIcons.Phone; }
+                                  if (contact.type === 'whatsapp') { href = `https://wa.me/${contact.value.replace(/[^0-9]/g, '')}`; icon = LucideIcons.MessageCircle; }
+
+                                  const Icon = icon;
+
+                                  return (
+                                      <a key={i} href={href} target="_blank" rel="noreferrer" className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 hover:-translate-y-1 transition-transform flex items-center gap-4 group text-left">
+                                          <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white ${contact.type === 'whatsapp' ? 'bg-green-500' : 'bg-cacu-primary'}`}>
+                                              <Icon size={20} />
+                                          </div>
+                                          <div>
+                                              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">{contact.label}</span>
+                                              <span className="text-lg font-bold text-cacu-dark group-hover:text-cacu-primary transition-colors">{contact.value}</span>
+                                          </div>
+                                      </a>
+                                  )
+                              })}
+                          </div>
+                      )}
+
+                      {/* Social Links */}
+                      {item.socialLinks && item.socialLinks.length > 0 && (
+                          <div className="flex flex-wrap justify-center gap-6">
+                              {item.socialLinks.map((social, i) => {
+                                  let Icon = LucideIcons.Globe;
+                                  let colorClass = 'hover:text-cacu-primary';
+
+                                  if (social.platform === 'instagram') { Icon = LucideIcons.Instagram; colorClass = 'hover:text-pink-600'; }
+                                  if (social.platform === 'facebook') { Icon = LucideIcons.Facebook; colorClass = 'hover:text-blue-600'; }
+                                  if (social.platform === 'linkedin') { Icon = LucideIcons.Linkedin; colorClass = 'hover:text-blue-700'; }
+                                  if (social.platform === 'youtube') { Icon = LucideIcons.Youtube; colorClass = 'hover:text-red-600'; }
+
+                                  return (
+                                      <a key={i} href={social.url} target="_blank" rel="noreferrer" className={`p-4 bg-white rounded-full shadow-md text-gray-400 ${colorClass} transition-all hover:scale-110 hover:shadow-lg`}>
+                                          <Icon size={32} />
+                                      </a>
+                                  )
+                              })}
+                          </div>
+                      )}
+                  </AnimatedBlock>
+              </div>
+          </div>
+      );
+  }
+
+  // --- 11. TEXT/IMAGE ---
   const isRight = item.layout === 'right';
   return (
     <div className={`py-32 px-8 lg:px-24 bg-white min-h-screen flex items-center relative overflow-hidden section-page-break`}>
