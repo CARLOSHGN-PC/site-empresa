@@ -1,14 +1,25 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthService } from '../../services/authService';
+import { ContentService } from '../../services/contentService';
+import { GlobalSettings } from '../../types';
 import { Logo } from '../Logo';
 import { Lock, ArrowRight } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const [pass, setPass] = useState('');
   const [error, setError] = useState(false);
+  const [settings, setSettings] = useState<GlobalSettings | undefined>(undefined);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      const data = await ContentService.getData();
+      setSettings(data.settings);
+    };
+    loadSettings();
+  }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,12 +40,12 @@ export const Login: React.FC = () => {
 
       <div className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md relative z-10 animate-fade-in">
         <div className="flex justify-center mb-8">
-            <Logo mode="dark" className="scale-110" />
+            <Logo mode="dark" className="scale-110" settings={settings} />
         </div>
         
         <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-cacu-dark mb-2">Acesso Restrito</h2>
-            <p className="text-gray-500 text-sm">Painel de Gestão do Relatório</p>
+            <p className="text-gray-500 text-sm">Painel de Gestão do {settings?.reportTitle || 'Relatório'}</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
