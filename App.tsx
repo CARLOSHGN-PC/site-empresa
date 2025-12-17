@@ -34,12 +34,12 @@ const PublicView: React.FC = () => {
   if (!data) return <div className="flex h-screen items-center justify-center text-cacu-dark font-bold animate-pulse">Carregando relatório...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 print:pt-0">
+    <div className="h-screen w-full overflow-hidden bg-gray-50 print:h-auto print:overflow-visible">
       <div className="">
         <Navigation sections={data.sections} settings={data.settings} isOpen={isNavOpen} setIsOpen={setIsNavOpen} />
       </div>
       
-      <main className="snap-y snap-proximity h-screen overflow-y-scroll scroll-smooth print:h-auto print:overflow-visible">
+      <main className="snap-y snap-proximity h-full w-full overflow-y-auto scroll-smooth pt-24 print:pt-24 print:h-auto print:overflow-visible">
         {data.sections.map(section => (
           <div key={section.id} id={section.id} className="snap-start">
              {section.items.map(item => (
