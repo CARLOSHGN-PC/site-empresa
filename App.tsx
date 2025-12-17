@@ -35,20 +35,20 @@ const PublicView: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pt-24 print:pt-0">
-      <div className="print:hidden">
+      <div className="">
         <Navigation sections={data.sections} settings={data.settings} isOpen={isNavOpen} setIsOpen={setIsNavOpen} />
       </div>
       
-      <main>
+      <main className="snap-y snap-mandatory h-screen overflow-y-scroll scroll-smooth print:h-auto print:overflow-visible">
         {data.sections.map(section => (
-          <div key={section.id} id={section.id}>
+          <div key={section.id} id={section.id} className="snap-start snap-always">
              {section.items.map(item => (
                <SectionRenderer key={item.id} item={item} settings={data.settings} />
              ))}
           </div>
         ))}
         
-        <footer className="bg-cacu-dark text-white py-16 px-8 lg:px-24 flex flex-col md:flex-row justify-between items-center gap-8 border-t-4 border-cacu-primary print:hidden">
+        <footer className="bg-cacu-dark text-white py-16 px-8 lg:px-24 flex flex-col md:flex-row justify-between items-center gap-8 border-t-4 border-cacu-primary print:hidden snap-start">
             <div className="text-left">
                 <p className="font-bold text-2xl mb-2">{data.settings?.companyName || 'CACU Agroindustrial'}</p>
                 <p className="text-white/70">{data.settings?.reportTitle || 'Relatório de Sustentabilidade'}</p>
