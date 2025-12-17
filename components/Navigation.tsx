@@ -51,7 +51,7 @@ export const Navigation: React.FC<Props> = ({ sections, settings, isOpen, setIsO
         </div>
 
         {/* Desktop Menu */}
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
+        <nav className="hidden lg:flex print:flex items-center gap-6 xl:gap-8">
             {sections.map(section => (
                 <a 
                     key={section.id} 
